@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Mapping the value chain</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    
+    <style>
+    
+    /* CSS goes here. */
+
+    h1 {
+      text-align: center;
+      font-family: "Helvetica Neue";
+      font-size: 500%;
+      margin-bottom: 20px;
+    }
+    
+    .ne110 { fill: #ddc; }
+    
+    .Ra0 {fill: #c6dbef; }
+    .Rq1 { fill: #9ecae1; }
+    .Rq2 { fill: #6baed6; }
+    .Rq3 { fill: #4292c6; }
+    .Rq4 { fill: #2171b5; }
+    .Rq5 { fill: #084594; }
+
+    .Wq0 { fill: #fcbba1; }
+    .Wq1 { fill: #fc9272; }
+    .Wq2 { fill: #fb6a4a; }
+    .Wq3 { fill: #ef3b2c; }
+    .Wq4 { fill: #cb181d; }
+    .Wq5 { fill: #99000d; }
+
+    #svg {
+      width: 100%
+      height: auto;
+    }
+    #outermapdiv {
+      border: 2px solid #BDBDBD;
+      margin-top: 10px;
+    }
+    #outerbutton {
+      padding: 0px 0px 0px 0px;
+
+    }
+    #retail {
+      width: 100%;
+      background-color: #4292c6;
+      opacity: 0.5;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 150%;
+    }
+
+    #whole {
+      width: 100%;
+      background-color: #cb181d;
+      opacity: 0.5;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 150%;
+    }
+
+    #whole:active {
+      background-color: #cb181d;
+      opacity: 0.5;
+      color: #FFFFFF;
+    }
+
+    #retail:active {
+      background-color: #4292c6;
+      opacity: 0.5;
+      color: #FFFFFF;
+    }
+
+     #retail:hover {
+      outline: 0;
+      opacity: 0.30;
+      background-color: #4292c6;
+    }
+
+      #whole:hover {
+      outline: 0;
+      opacity: 0.30;
+      background-color: #cb181d;
+    }
+
+    #whole:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #cb181d;
+    }
+
+    #retail:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #4292c6;
+    }
+
+    
+        
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
+
+
+
+    </style>
+  </head>
+<body>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <h1>Visualizing the value chain</h1>
+</div>
+
+<!---these are buttons-->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-1 col-md-1"></div>
+    <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
+      <input type="submit" id="retail" value="Internet users" onclick="retailFill()"/>
+    </div>
+    <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
+      <input type="submit" id="whole" value="Mobile phones" onclick="wsFill()"/>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-1 col-md-1"></div>
+    <div class="col-lg-10 col-md-10 col-sm-12" id="outermapdiv">
+    </div>
+  </div>
+</div>
+
+
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var data;
+
+d3.tsv("data.tsv", function(error, tsvdata) {
+  if (error) return console.warn(error);
+  data = tsvdata;
+});
+
+var WIDTH = 800, HEIGHT = 450;
+
+var drawD3Document = function(data) {
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = WIDTH - margin.left - margin.right,
+    height = HEIGHT - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.category10();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var svg = d3.select("#outermapdiv")
+    .append("div")
+    .attr("id", "svg")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  data.forEach(function(d) {
+    d.sepalLength = +d.sepalLength;
+    d.sepalWidth = +d.sepalWidth;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
+  y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Sepal Width (cm)");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Sepal Length (cm)")
+
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", function(d) {
+          return 'dot color-' + color(d.species).replace('#','');
+        })
+      .attr("r", 3.5)
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+      .on("mouseover", function() {
+          d3.selectAll(".color-" + $(this).attr("dot-color"))
+            .attr("r", 5.5);
+      })
+      .on("mouseout", function() {
+          d3.selectAll(".color-" + $(this).attr("dot-color"))
+            .attr("r", 3.5);
+      });
+
+  var legend = svg.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+};
+
+
+
+   document.addEventListener('DOMContentLoaded', init, false);
+      function init(){
+       
+        var wbutton = document.getElementById('whole');
+        wbutton.addEventListener('click', math.Round(wsFill), true);
+        
+        var rbutton = document.getElementById('retail');
+        rbutton.addEventListener('click', math.Round(retailFill), true);
+        
+      };
+
+
+//d3.select(self.frameElement).style("height", height + "px");
+
+
+
+
+</script>
+</body>
+</html>
