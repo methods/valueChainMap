@@ -123,16 +123,16 @@
   <div class="row">
     <h1>Visualizing the value chain</h1>
 </div>
-
-<!---these are buttons-->
+</div>
+-these are buttons
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
     <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
-      <input type="submit" id="retail" value="Internet users" onclick="retailFill()"/>
+      <input type="submit" id="retail" value="Internet users" onclick=""/>
     </div>
     <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
-      <input type="submit" id="whole" value="Mobile phones" onclick="wsFill()"/>
+      <input type="submit" id="whole" value="Mobile phones" onclick=""/>
     </div>
   </div>
 </div>
@@ -147,24 +147,41 @@
 
 
 
+<!--<div id="canvas-svg"></div>-->
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
+
+
 var data;
 
-d3.tsv("data.tsv", function(error, tsvdata) {
-  if (error) return console.warn(error);
-  data = tsvdata;
-  console.log(data);
+d3.csv("data.csv", function(error, csvdata) {
+data = csvdata;
+data.forEach(function(d) {
+    d.sepalLength = +d.sepalLength;
+    d.sepalWidth = +d.sepalWidth;
+    //d.species = d.species;
+    //console.log(d.species);
+    //console.log(d.sepalWidth);
+});
+drawD3Document(data);
 });
 
-var WIDTH = 800, HEIGHT = 450;
+
+
+var WIDTH = 600, HEIGHT = 600;
 
 var drawD3Document = function(data) {
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = WIDTH - margin.left - margin.right,
     height = HEIGHT - margin.top - margin.bottom;
+    
+    
+var width = 960,
+    height = 700;
+    
+    //console.log("in here");
 
 var x = d3.scale.linear()
     .range([0, width]);
@@ -183,19 +200,15 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var svg = d3.select("#outermapdiv")
-    //.append("div")
-    //.attr("id", "svg")
+    .append("div")
+    .attr("id", "svg")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  data.forEach(function(d) {
-    d.sepalLength = +d.sepalLength;
-    d.sepalWidth = +d.sepalWidth;
-    console.log(d.sepalWidth);
-  });
+
 
   x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
   y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
@@ -277,10 +290,12 @@ var svg = d3.select("#outermapdiv")
       };
 
 
+
 //d3.select(self.frameElement).style("height", height + "px");
 
 
 
+//drawD3Document(data);
 
 </script>
 </body>
