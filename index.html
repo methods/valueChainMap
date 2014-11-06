@@ -45,61 +45,91 @@
       padding: 0px 0px 0px 0px;
 
     }
-    #retail {
+
+      #inHouse {
       width: 100%;
-      background-color: #4292c6;
-      opacity: 0.5;
+      background-color: #9FCD99;
+      opacity: 0.9;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 150%;
+    }
+      
+      #inHouse:active {
+      background-color: #9FCD99;
+      opacity: 0.9;
+      color: #FFFFFF;
+    }
+
+     #inHouse:hover {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #9FCD99;
+    }
+      #inHouse:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #9FCD99;
+    }
+
+ 
+      
+      #outsource {
+      width: 100%;
+      background-color: #F26C64;
+      opacity: 0.9;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 150%;
+    }
+      
+      #outsource:active {
+      background-color: #F26C64;
+      opacity: 0.9;
+      color: #FFFFFF;
+    }
+
+     #outsource:hover {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #F26C64;
+    }
+      #outsource:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #F26C64;
+    }
+
+    #offTheShelf {
+      width: 100%;
+      background-color: #FFDD71;
+      opacity: 0.9;
       color: #FFFFFF;
       border: 1px solid #BDBDBD;
       font-family: "Helvetica Neue", Helvetica, sans-serif;
       font-size: 150%;
     }
 
-    #whole {
-      width: 100%;
-      background-color: #cb181d;
-      opacity: 0.5;
-      color: #FFFFFF;
-      border: 1px solid #BDBDBD;
-      font-family: "Helvetica Neue", Helvetica, sans-serif;
-      font-size: 150%;
-    }
-
-    #whole:active {
-      background-color: #cb181d;
-      opacity: 0.5;
+    #offTheShelf:active {
+      background-color: #FFDD71;
+      opacity: 0.9;
       color: #FFFFFF;
     }
-
-    #retail:active {
-      background-color: #4292c6;
-      opacity: 0.5;
-      color: #FFFFFF;
-    }
-
-     #retail:hover {
-      outline: 0;
-      opacity: 0.30;
-      background-color: #4292c6;
-    }
-
-      #whole:hover {
-      outline: 0;
-      opacity: 0.30;
-      background-color: #cb181d;
-    }
-
-    #whole:focus {
+    
+    #offTheShelf:hover {
       outline: 0;
       opacity: 0.75;
-      background-color: #cb181d;
+      background-color: #FFDD71;
     }
 
-    #retail:focus {
+    #offTheShelf:focus {
       outline: 0;
       opacity: 0.75;
-      background-color: #4292c6;
+      background-color: #FFDD71;
     }
+
 
     
         
@@ -124,16 +154,18 @@
     <h1>Visualizing the value chain</h1>
 </div>
 </div>
--these are buttons
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
-    <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
-      <input type="submit" id="retail" value="Internet users" onclick=""/>
+    <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+      <input type="submit" id="inHouse" value="Create" onclick=""/>
     </div>
-    <div class="col-lg-5 col-md-5 col-sm-6 col-sx-5" id="outerbutton">
-      <input type="submit" id="whole" value="Mobile phones" onclick=""/>
+    <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+      <input type="submit" id="offTheShelf" value="Create" onclick=""/>
     </div>
+      <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+    <input type="submit" id="outsource" value="Create" onclick=""/>
+      </div>
   </div>
 </div>
 
@@ -222,7 +254,7 @@ var svg = d3.select("#outermapdiv")
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
-      .text("Value chain (most visible here)");
+      .text("Evolution (most commodified here");
 
   svg.append("g")
       .attr("class", "y axis")
@@ -233,7 +265,7 @@ var svg = d3.select("#outermapdiv")
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Evolution")
+      .text("Value chain (most visible here)")
 
   svg.selectAll(".dot")
       .data(data)
@@ -281,7 +313,7 @@ var svg = d3.select("#outermapdiv")
    document.addEventListener('DOMContentLoaded', init, false);
       function init(){
        
-        var wbutton = document.getElementById('whole');
+        var wbutton = document.getElementById('offTheShelf');
         //wbutton.addEventListener('click', math.Round(wsFill), true);
         
         var rbutton = document.getElementById('retail');
