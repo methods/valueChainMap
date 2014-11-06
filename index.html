@@ -222,7 +222,7 @@ var svg = d3.select("#outermapdiv")
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
-      .text("Sepal Width (cm)");
+      .text("Value chain (most visible here)");
 
   svg.append("g")
       .attr("class", "y axis")
@@ -233,7 +233,7 @@ var svg = d3.select("#outermapdiv")
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Sepal Length (cm)")
+      .text("Evolution")
 
   svg.selectAll(".dot")
       .data(data)
