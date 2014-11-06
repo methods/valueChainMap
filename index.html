@@ -156,6 +156,7 @@ var data;
 d3.tsv("data.tsv", function(error, tsvdata) {
   if (error) return console.warn(error);
   data = tsvdata;
+  console.log(data);
 });
 
 var WIDTH = 800, HEIGHT = 450;
@@ -182,8 +183,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var svg = d3.select("#outermapdiv")
-    .append("div")
-    .attr("id", "svg")
+    //.append("div")
+    //.attr("id", "svg")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -193,6 +194,7 @@ var svg = d3.select("#outermapdiv")
   data.forEach(function(d) {
     d.sepalLength = +d.sepalLength;
     d.sepalWidth = +d.sepalWidth;
+    console.log(d.sepalWidth);
   });
 
   x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
