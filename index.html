@@ -157,8 +157,14 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
+     <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+      <input type="text" id="xValNew" value="xvalnew">
+    </div>
+      <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+      <input type="text" id="yValNew" value="yvalnew">
+    </div>
     <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
-      <input type="submit" id="inHouse" value="Create" onclick=""/>
+      <input type="submit" id="inHouse" value="Create" onclick="updateGraph()"/>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
       <input type="submit" id="offTheShelf" value="Create" onclick=""/>
@@ -185,7 +191,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
 <script>
 
-
+var counter = 0;
+var svg;
 
 var data;
 
@@ -198,19 +205,19 @@ data.forEach(function(d) {
     //console.log(d.species);
     //console.log(d.sepalWidth);
 });
-drawD3Document(data);
+
+initGraph(data);
 });
-
-
 
 var WIDTH = 600, HEIGHT = 600;
 
-var drawD3Document = function(data) {
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = WIDTH - margin.left - margin.right,
-    height = HEIGHT - margin.top - margin.bottom;
+var margin = {top: 20, right: 20, bottom: 30, left: 40};
+    // width = WIDTH - margin.left - margin.right,
+    // height = HEIGHT - margin.top - margin.bottom;
     
     
+
+var initGraph = function(data) {
 var width = 960,
     height = 700;
     
@@ -232,7 +239,7 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-var svg = d3.select("#outermapdiv")
+svg = d3.select("#outermapdiv")
     .append("div")
     .attr("id", "svg")
     .append("svg")
@@ -240,8 +247,6 @@ var svg = d3.select("#outermapdiv")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
 
   x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
   y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
@@ -267,6 +272,8 @@ var svg = d3.select("#outermapdiv")
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Value chain (most visible here)")
+      
+//svg = d3.select("#svg")
 
   svg.selectAll(".dot")
       .data(data)
@@ -289,51 +296,107 @@ var svg = d3.select("#outermapdiv")
       })
       .on("dblclick", function() {
           //doubleclick behavior here. edit function prob?
-          alert("doubleclick registered")
+          alert("doubleclick registered");
       });
-      
 
-  var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color);
-
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d; });
+		svg.selectAll(".text")
+		   .data(data)
+		   .enter()
+		   .append("text")
+		   .text(function(d) {
+		      return d.species;
+		   })
+		   .attr("x", function(d) {
+		   		//console.log(d.species);
+		   		return x(d.sepalWidth);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "sans-serif")
+		   .attr("font-size", "11px")
+		   .attr("fill", "black");
+    
 
 };
 
+function updateGraph() {
+var width = 960,
+    height = 700;
+    
+  var xValue = parseInt(document.getElementById('xValNew').value, 10);
+  var yValue = parseInt(document.getElementById('yValNew').value, 10);
+  
+  var x = d3.scale.linear()
+    .range([0, width]);
+
+  //alert(typeof xValue);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+    
+    
+  x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
+  y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
+
+  
+  var color = d3.scale.category10();
+  var typeValue = "InHouse";
+  var newData = {
+    'sepalWidth': xValue,
+    'sepalLength': yValue,
+    'species': typeValue
+  }
+  data.push(newData);
+  
+  var dots = svg.selectAll(".dot").data(data);
+  
+  //update on drag + drop here
+  //dots.attr("class","update");
+  
+  dots.enter().append("circle")
+    .attr("class", function(d) {
+          return 'dot color-' + color(d.species).replace('#','');
+        })
+      .attr("r", 7)
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+      .on("mouseover", function() {
+          d3.selectAll(".color-" + $(this).attr("dot-color"))
+            .attr("r", 9);
+      })
+      .on("mouseout", function() {
+          d3.selectAll(".color-" + $(this).attr("dot-color"))
+            .attr("r", 7);
+      })
+      .on("dblclick", function() {
+          //doubleclick behavior here. edit function prob?
+          alert("doubleclick registered");
+      });
+      
+  dots.exit().remove();
+  
+  //console.log(data);
+  //drawD3Document(data);
+  
+};
+      
+  
 
 
    document.addEventListener('DOMContentLoaded', init, false);
       function init(){
        
         var wbutton = document.getElementById('offTheShelf');
+        //pop up dialog box to enter x,y,color
         //wbutton.addEventListener('click', math.Round(wsFill), true);
         
         var rbutton = document.getElementById('retail');
         //rbutton.addEventListener('click', math.Round(retailFill), true);
         
       };
-
-
-
-//d3.select(self.frameElement).style("height", height + "px");
-
-
-
-//drawD3Document(data);
 
 </script>
 </body>
