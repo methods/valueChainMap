@@ -361,8 +361,7 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             popup.append("div").attr("class","cswatch1")
             popup.append("div").attr("class","cswatch2")
             popup.append("div").attr("class","cswatch3")
-            popup.append("input").attr("type","submit").attr("id","editGo")
-            //.attr("onclick","updateGraph()")
+            popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
             //.append("a")
             //.attr("href",d.link)
             //.text(d.link_text);
@@ -396,6 +395,10 @@ d3.select("#svg").on('contextmenu',function (d,i) {
 };
 
 
+function editData() {
+  alert("patience");
+}
+
 function updateGraph(d) {
 
 console.log(d);
@@ -419,12 +422,12 @@ var y = d3.scale.linear()
   
   var color = d3.scale.category10();
   
-  if (xValue) {
+  // if (xValue) {
   
   var xValue = parseInt(document.getElementById('xValNew').value, 10);
   var yValue = parseInt(document.getElementById('yValNew').value, 10);
   var desValue = document.getElementById('descrNew').value
-  
+  var typeValue = "InHouse"
   var newData = {
     'sepalWidth': xValue,
     'sepalLength': yValue,
@@ -434,7 +437,7 @@ var y = d3.scale.linear()
   
   data.push(newData);
   
-  }
+  // }
   
   
   var dots = svg.selectAll(".dot").data(data);
