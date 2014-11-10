@@ -227,7 +227,12 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40};
     // width = WIDTH - margin.left - margin.right,
     // height = HEIGHT - margin.top - margin.bottom;
     
-    
+
+function color(name) {
+  if(name==="InHouse") return "#9FCD99";
+  if(name==="OffTheShelf") return "#FFDD71";
+  if(name==="Outsource") return "#F26C64";
+}
 
 var initGraph = function(data) {
 var width = 960,
@@ -241,7 +246,8 @@ var x = d3.scale.linear()
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var color = d3.scale.category10();
+// var color = d3.scale.category10();
+console.log(color("InHouse"));
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -359,14 +365,15 @@ d3.select("#svg").on('contextmenu',function (d,i) {
                 .style("top", mousePosition[1] + "px");
             popup.append("h3").text(d.description);
             popup.append("p").text(
-                "Editing " + d.description)
+                "Currently " + d.species)
             popup.append("input").attr("type","text").attr("id","eXVal").attr("value",d.sepalWidth)
             popup.append("input").attr("type","text").attr("id","eYVal").attr("value",d.sepalLength)
             popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
             
-            popup.append("div").append("input").attr("type","submit").attr("class","cswatch1").attr("onclick","makeGreen()")
-            popup.append("div").append("input").attr("type","submit").attr("class","cswatch2").attr("onclick","makeYellow()")
-            popup.append("div").append("input").attr("type","submit").attr("class","cswatch3").attr("onclick","makeRed()")
+            popup.append("input").attr("type","button").attr("class","cswatch1").attr("onclick","makeGreen()")
+            popup.append("input").attr("type","button").attr("class","cswatch3").attr("onclick","makeYellow()")
+            popup.append("input").attr("type","button").attr("class","cswatch2").attr("onclick","makeRed()")
+            popup.append("p")
             popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
             popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","delData()")
             //.append("a")
@@ -406,7 +413,7 @@ function addData() {
   var xValue = parseInt(document.getElementById('xValNew').value, 10);
   var yValue = parseInt(document.getElementById('yValNew').value, 10);
   var desValue = document.getElementById('descrNew').value
-  var typeValue = "InHouse"
+  var typeValue = "OffTheShelf"
   var newData = {
     'sepalWidth': xValue,
     'sepalLength': yValue,
@@ -439,8 +446,12 @@ function makeYellow() {
 }
 
 function makeRed() {
+  //check this!!!!!!
+  console.log(data);
   var editIndex = data.indexOf(gd);
   data[editIndex].species = "Outsource";
+  console.log(editIndex);
+  console.log(data);
   updateGraph();
 }
 
@@ -486,7 +497,7 @@ var y = d3.scale.linear()
   y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
 
   
-  var color = d3.scale.category10();
+  // var color = d3.scale.category10();
 
   
   
@@ -552,7 +563,7 @@ var y = d3.scale.linear()
 		   .attr("fill", "black")
 		   .attr("class", "dtext");
 		   
-		   svg.selectAll(".dtext")
+   svg.selectAll(".dtext")
 		   .data(data)
 		  // .enter()
 		  // .append("text")
