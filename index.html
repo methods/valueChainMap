@@ -171,7 +171,7 @@
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
      <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="text" id="xValNew" value="xvalnew">
+      <input type="text" id="xValNew">
     </div>
       <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       <input type="text" id="yValNew" value="yvalnew">
@@ -180,7 +180,7 @@
       <input type="text" id="descrNew" value="descrNew">
     </div>
     <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="submit" id="inHouse" value="Create" onclick="updateGraph()"/>
+      <input type="submit" id="inHouse" value="Create" onclick="addData()"/>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       <input type="submit" id="offTheShelf" value="Create" onclick=""/>
@@ -208,6 +208,7 @@ var counter = 0;
 var svg;
 var contextMenuShowing;
 var data;
+var gd;
 
 d3.csv("data.csv", function(error, csvdata) {
 data = csvdata;
@@ -286,7 +287,7 @@ svg = d3.select("#outermapdiv")
       
 //svg = d3.select("#svg")
 
-  svg.selectAll(".dot")
+  svg.selectAll(".dcircle")
       .data(data)
     .enter().append("circle")
       .attr("class", function(d) {
@@ -326,7 +327,8 @@ svg = d3.select("#outermapdiv")
 		   })
 		   .attr("font-family", "sans-serif")
 		   .attr("font-size", "11px")
-		   .attr("fill", "black");
+		   .attr("fill", "black")
+		   .attr("class", "dtext");
 		   
 		   //popup menu
 		   
@@ -345,6 +347,7 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             d3.event.preventDefault();
             contextMenuShowing = true;
             d = d3_target.datum();
+            gd = d3_target.datum();
             // Build the popup
             
             canvas = d3.select("#svg"); // ?change
@@ -357,8 +360,11 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             popup.append("h3").text(d.description);
             popup.append("p").text(
                 "Editing " + d.description)
+            popup.append("input").attr("type","text").attr("id","eXVal").attr("value",d.sepalWidth)
+            popup.append("input").attr("type","text").attr("id","eYVal").attr("value",d.sepalLength)
             popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
-            popup.append("div").attr("class","cswatch1")
+            
+            popup.append("div").append("input").attr("type","submit").attr("class","cswatch1").attr("onclick","makeGreen()")
             popup.append("div").attr("class","cswatch2")
             popup.append("div").attr("class","cswatch3")
             popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
@@ -394,14 +400,58 @@ d3.select("#svg").on('contextmenu',function (d,i) {
 
 };
 
+function addData() {
+  
+  var xValue = parseInt(document.getElementById('xValNew').value, 10);
+  var yValue = parseInt(document.getElementById('yValNew').value, 10);
+  var desValue = document.getElementById('descrNew').value
+  var typeValue = "InHouse"
+  var newData = {
+    'sepalWidth': xValue,
+    'sepalLength': yValue,
+    'species': typeValue,
+    'description': desValue
+  }
+  
+  data.push(newData);
+// empty out vals etc
+  document.getElementById('xValNew').value = "";
+  document.getElementById('yValNew').value = "";
+  document.getElementById('descrNew').value = "";
 
-function editData() {
-  alert("patience");
+  updateGraph();
+  
 }
 
-function updateGraph(d) {
 
-console.log(d);
+
+function makeGreen() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].species = "InHouse";
+  updateGraph();
+}
+
+function makeYellow() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].species = "InHouse";
+  updateGraph();
+}
+
+
+function editData() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].description = document.getElementById('eDescr').value;
+  data[editIndex].sepalWidth = document.getElementById('eXVal').value;
+  data[editIndex].sepalLength = document.getElementById('eYVal').value;
+
+  //update type here as well
+  console.log(data);
+  d3.select(".popup").remove();
+  contextMenuShowing = false;
+  updateGraph();
+}
+
+function updateGraph() {
 
 var width = 960,
     height = 700;
@@ -421,26 +471,10 @@ var y = d3.scale.linear()
 
   
   var color = d3.scale.category10();
-  
-  // if (xValue) {
-  
-  var xValue = parseInt(document.getElementById('xValNew').value, 10);
-  var yValue = parseInt(document.getElementById('yValNew').value, 10);
-  var desValue = document.getElementById('descrNew').value
-  var typeValue = "InHouse"
-  var newData = {
-    'sepalWidth': xValue,
-    'sepalLength': yValue,
-    'species': typeValue,
-    'description': desValue
-  }
-  
-  data.push(newData);
-  
-  // }
+
   
   
-  var dots = svg.selectAll(".dot").data(data);
+  var dots = svg.selectAll(".dcircle").data(data);
   
   //update on drag + drop here
   //dots.attr("class","update");
@@ -462,13 +496,29 @@ var y = d3.scale.linear()
       .on("mouseout", function() {
           d3.selectAll(".color-" + $(this).attr("dot-color"))
             .attr("r", defaultSize);
-      })
-      .on("dblclick", function() {
-          //doubleclick behavior here. edit function prob?
-          alert("doubleclick registered");
       });
       
-		svg.selectAll(".text")
+   dots
+    .attr("class", function(d) {
+          return 'dot color-' + color(d.species).replace('#','');
+        })
+      .attr("r", defaultSize)
+      .attr("class", "dcircle")
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+      .on("mouseover", function() {
+          d3.selectAll(".color-" + $(this).attr("dot-color"))
+            .attr("r", defaultSize*1.1);
+      })
+      .on("mouseout", function() {
+          d3.selectAll(".color-" + $(this).attr("dot-color"))
+            .attr("r", defaultSize);
+      });
+    
+      
+		svg.selectAll(".dtext")
 		   .data(data)
 		   .enter()
 		   .append("text")
@@ -483,9 +533,29 @@ var y = d3.scale.linear()
 		   })
 		   .attr("font-family", "sans-serif")
 		   .attr("font-size", "11px")
+		   .attr("fill", "black")
+		   .attr("class", "dtext");
+		   
+		   svg.selectAll(".dtext")
+		   .data(data)
+		  // .enter()
+		  // .append("text")
+		   .text(function(d) {
+		      return d.description;
+		   })
+		   .attr("x", function(d) {
+		   		return x(d.sepalWidth);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "sans-serif")
+		   .attr("font-size", "11px")
 		   .attr("fill", "black");
       
   dots.exit().remove();
+  
+  //svg.selectAll(".text").data(data).exit().remove();
   
 };
       
