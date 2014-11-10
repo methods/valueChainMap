@@ -365,9 +365,10 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
             
             popup.append("div").append("input").attr("type","submit").attr("class","cswatch1").attr("onclick","makeGreen()")
-            popup.append("div").attr("class","cswatch2")
-            popup.append("div").attr("class","cswatch3")
+            popup.append("div").append("input").attr("type","submit").attr("class","cswatch2").attr("onclick","makeYellow()")
+            popup.append("div").append("input").attr("type","submit").attr("class","cswatch3").attr("onclick","makeRed()")
             popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
+            popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","delData()")
             //.append("a")
             //.attr("href",d.link)
             //.text(d.link_text);
@@ -420,8 +421,8 @@ function addData() {
   document.getElementById('descrNew').value = "";
 
   updateGraph();
-  
 }
+
 
 
 
@@ -433,7 +434,13 @@ function makeGreen() {
 
 function makeYellow() {
   var editIndex = data.indexOf(gd);
-  data[editIndex].species = "InHouse";
+  data[editIndex].species = "OffTheShelf";
+  updateGraph();
+}
+
+function makeRed() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].species = "Outsource";
   updateGraph();
 }
 
@@ -446,6 +453,15 @@ function editData() {
 
   //update type here as well
   console.log(data);
+  d3.select(".popup").remove();
+  contextMenuShowing = false;
+  updateGraph();
+}
+
+
+function delData() {
+  var editIndex = data.indexOf(gd);
+  data.splice(editIndex, 1);
   d3.select(".popup").remove();
   contextMenuShowing = false;
   updateGraph();
@@ -475,7 +491,7 @@ var y = d3.scale.linear()
   
   
   var dots = svg.selectAll(".dcircle").data(data);
-  
+  var labels = svg.selectAll(".dtext").data(data);
   //update on drag + drop here
   //dots.attr("class","update");
   
@@ -554,7 +570,7 @@ var y = d3.scale.linear()
 		   .attr("fill", "black");
       
   dots.exit().remove();
-  
+  labels.exit().remove();
   //svg.selectAll(".text").data(data).exit().remove();
   
 };
