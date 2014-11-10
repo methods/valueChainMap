@@ -209,6 +209,12 @@ var svg;
 var contextMenuShowing;
 var data;
 var gd;
+var drag = d3.behavior.drag()
+             .on('dragstart', function() { dots.style('fill', 'red'); })
+             .on('drag', function() { dots.attr('cx', d3.event.x)
+                                            .attr('cy', d3.event.y); })
+             .on('dragend', function() { dots.style('fill', 'black'); });
+             
 
 d3.csv("data.csv", function(error, csvdata) {
 data = csvdata;
@@ -247,7 +253,6 @@ var y = d3.scale.linear()
     .range([height, 0]);
 
 // var color = d3.scale.category10();
-console.log(color("InHouse"));
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -290,55 +295,9 @@ svg = d3.select("#outermapdiv")
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Value chain (most visible here)")
-      
-//svg = d3.select("#svg")
 
-  svg.selectAll(".dcircle")
-      .data(data)
-    .enter().append("circle")
-      .attr("class", function(d) {
-          return 'dot color-' + color(d.species).replace('#','');
-        })
-      .attr("r", defaultSize)
-      .attr("class", "dcircle")
-      .attr("cx", function(d) { return x(d.sepalWidth); })
-      .attr("cy", function(d) { return y(d.sepalLength); })
-      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
-      .style("fill", function(d) { return color(d.species); })
-      .on("mouseover", function() {
-          d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", defaultSize*1.1);
-      })
-      .on("mouseout", function() {
-          d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", defaultSize);
-      })
-      .on("dblclick", function(d) {
-          //doubleclick behavior here. edit function prob?
-      });
-
-		svg.selectAll(".text")
-		   .data(data)
-		   .enter()
-		   .append("text")
-		   .text(function(d) {
-		      return d.description;
-		   })
-		   .attr("x", function(d) {
-		   		//console.log(d.species);
-		   		return x(d.sepalWidth);
-		   })
-		   .attr("y", function(d) {
-		   		return y(d.sepalLength);
-		   })
-		   .attr("font-family", "sans-serif")
-		   .attr("font-size", "11px")
-		   .attr("fill", "black")
-		   .attr("class", "dtext");
 		   
 		   //popup menu
-		   
-		   
  contextMenuShowing = false;
 
 d3.select("#svg").on('contextmenu',function (d,i) {
@@ -376,9 +335,6 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             popup.append("p")
             popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
             popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","delData()")
-            //.append("a")
-            //.attr("href",d.link)
-            //.text(d.link_text);
             
             canvasSize = [
                 canvas.node().offsetWidth,
@@ -404,7 +360,7 @@ d3.select("#svg").on('contextmenu',function (d,i) {
 });
 
 //end popup menu
-    
+updateGraph();
 
 };
 
@@ -446,26 +402,23 @@ function makeYellow() {
 }
 
 function makeRed() {
-  //check this!!!!!!
-  console.log(data);
   var editIndex = data.indexOf(gd);
   data[editIndex].species = "Outsource";
-  console.log(editIndex);
-  console.log(data);
   updateGraph();
 }
 
 
 function editData() {
   var editIndex = data.indexOf(gd);
+  console.log("messing w")
+  console.log(data[editIndex])
   data[editIndex].description = document.getElementById('eDescr').value;
   data[editIndex].sepalWidth = document.getElementById('eXVal').value;
   data[editIndex].sepalLength = document.getElementById('eYVal').value;
-
-  //update type here as well
-  console.log(data);
   d3.select(".popup").remove();
   contextMenuShowing = false;
+    console.log("messed w")
+  console.log(data[editIndex])
   updateGraph();
 }
 
@@ -483,7 +436,6 @@ function updateGraph() {
 var width = 960,
     height = 700;
     
-  
   var x = d3.scale.linear()
     .range([0, width]);
 
@@ -493,18 +445,24 @@ var y = d3.scale.linear()
     .range([height, 0]);
     
     
-  x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
-  y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
+  x.domain(d3.extent([0,100])).nice();
+  y.domain(d3.extent([0,100])).nice();
 
+// console.log(x.domain);
+// console.log(y.domain);
   
-  // var color = d3.scale.category10();
-
+var drag = d3.behavior.drag()
+            .on('drag', function() { dots.attr('cx', d3.event.x)
+                                            .attr('cy', d3.event.y);
+                                            })
+            .on('dragend', function() {
+              updateGraph();
+              });
+ 
   
   
   var dots = svg.selectAll(".dcircle").data(data);
   var labels = svg.selectAll(".dtext").data(data);
-  //update on drag + drop here
-  //dots.attr("class","update");
   
   dots.enter().append("circle")
     .attr("class", function(d) {
@@ -512,18 +470,11 @@ var y = d3.scale.linear()
         })
       .attr("r", defaultSize)
       .attr("class", "dcircle")
+      .call(drag)
       .attr("cx", function(d) { return x(d.sepalWidth); })
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
       .style("fill", function(d) { return color(d.species); })
-      .on("mouseover", function() {
-          d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", defaultSize*1.1);
-      })
-      .on("mouseout", function() {
-          d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", defaultSize);
-      });
       
    dots
     .attr("class", function(d) {
@@ -535,16 +486,7 @@ var y = d3.scale.linear()
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
       .style("fill", function(d) { return color(d.species); })
-      .on("mouseover", function() {
-          d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", defaultSize*1.1);
-      })
-      .on("mouseout", function() {
-          d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", defaultSize);
-      });
     
-      
 		svg.selectAll(".dtext")
 		   .data(data)
 		   .enter()
@@ -565,8 +507,6 @@ var y = d3.scale.linear()
 		   
    svg.selectAll(".dtext")
 		   .data(data)
-		  // .enter()
-		  // .append("text")
 		   .text(function(d) {
 		      return d.description;
 		   })
@@ -582,24 +522,13 @@ var y = d3.scale.linear()
       
   dots.exit().remove();
   labels.exit().remove();
-  //svg.selectAll(".text").data(data).exit().remove();
+
+
+//d3.selectAll(".draggable").call(drag);
   
 };
       
-  
 
-
-   document.addEventListener('DOMContentLoaded', init, false);
-      function init(){
-       
-        var wbutton = document.getElementById('offTheShelf');
-        //pop up dialog box to enter x,y,color
-        //wbutton.addEventListener('click', math.Round(wsFill), true);
-        
-        var rbutton = document.getElementById('retail');
-        //rbutton.addEventListener('click', math.Round(retailFill), true);
-        
-      };
 
 </script>
 </body>
