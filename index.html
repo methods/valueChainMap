@@ -17,22 +17,6 @@
       margin-bottom: 20px;
     }
     
-    .ne110 { fill: #ddc; }
-    
-    .Ra0 {fill: #c6dbef; }
-    .Rq1 { fill: #9ecae1; }
-    .Rq2 { fill: #6baed6; }
-    .Rq3 { fill: #4292c6; }
-    .Rq4 { fill: #2171b5; }
-    .Rq5 { fill: #084594; }
-
-    .Wq0 { fill: #fcbba1; }
-    .Wq1 { fill: #fc9272; }
-    .Wq2 { fill: #fb6a4a; }
-    .Wq3 { fill: #ef3b2c; }
-    .Wq4 { fill: #cb181d; }
-    .Wq5 { fill: #99000d; }
-
     #svg {
       width: 100%
       height: auto;
@@ -72,8 +56,6 @@
       opacity: 0.75;
       background-color: #9FCD99;
     }
-
- 
       
       #outsource {
       width: 100%;
@@ -129,19 +111,6 @@
       opacity: 0.75;
       background-color: #FFDD71;
     }
-
-
-    
-        
-    .d3-tip {
-      line-height: 1;
-      font-weight: bold;
-      padding: 12px;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      border-radius: 2px;
-    }
-
 
 
     </style>
@@ -210,6 +179,7 @@ initGraph(data);
 });
 
 var WIDTH = 600, HEIGHT = 600;
+var defaultSize = 50;
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40};
     // width = WIDTH - margin.left - margin.right,
@@ -281,18 +251,18 @@ svg = d3.select("#outermapdiv")
       .attr("class", function(d) {
           return 'dot color-' + color(d.species).replace('#','');
         })
-      .attr("r", 7)
+      .attr("r", defaultSize)
       .attr("cx", function(d) { return x(d.sepalWidth); })
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
       .style("fill", function(d) { return color(d.species); })
       .on("mouseover", function() {
           d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", 9);
+            .attr("r", defaultSize*1.1);
       })
       .on("mouseout", function() {
           d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", 7);
+            .attr("r", defaultSize);
       })
       .on("dblclick", function() {
           //doubleclick behavior here. edit function prob?
@@ -304,7 +274,7 @@ svg = d3.select("#outermapdiv")
 		   .enter()
 		   .append("text")
 		   .text(function(d) {
-		      return d.species;
+		      return d.description;
 		   })
 		   .attr("x", function(d) {
 		   		//console.log(d.species);
@@ -321,6 +291,7 @@ svg = d3.select("#outermapdiv")
 };
 
 function updateGraph() {
+
 var width = 960,
     height = 700;
     
@@ -345,7 +316,8 @@ var y = d3.scale.linear()
   var newData = {
     'sepalWidth': xValue,
     'sepalLength': yValue,
-    'species': typeValue
+    'species': typeValue,
+    'description': "new entry"
   }
   data.push(newData);
   
@@ -358,23 +330,41 @@ var y = d3.scale.linear()
     .attr("class", function(d) {
           return 'dot color-' + color(d.species).replace('#','');
         })
-      .attr("r", 7)
+      .attr("r", defaultSize)
       .attr("cx", function(d) { return x(d.sepalWidth); })
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
       .style("fill", function(d) { return color(d.species); })
       .on("mouseover", function() {
           d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", 9);
+            .attr("r", defaultSize*1.1);
       })
       .on("mouseout", function() {
           d3.selectAll(".color-" + $(this).attr("dot-color"))
-            .attr("r", 7);
+            .attr("r", defaultSize);
       })
       .on("dblclick", function() {
           //doubleclick behavior here. edit function prob?
           alert("doubleclick registered");
       });
+      
+		svg.selectAll(".text")
+		   .data(data)
+		   .enter()
+		   .append("text")
+		   .text(function(d) {
+		      return d.description;
+		   })
+		   .attr("x", function(d) {
+		   		//console.log(d.species);
+		   		return x(d.sepalWidth);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "sans-serif")
+		   .attr("font-size", "11px")
+		   .attr("fill", "black");
       
   dots.exit().remove();
   

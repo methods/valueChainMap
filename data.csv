@@ -1,9 +1,9 @@
-sepalWidth,sepalLength,species
-100,20,InHouse
-60,55,InHouse
-44,100,OffTheShelf
-55,44,OffTheShelf
-25,35,OffTheShelf
-40,30,Outsource
-10,20,Outsource
-5,15,Outsource
+sepalWidth,sepalLength,species,description
+100,20,InHouse,spaceship
+60,55,InHouse,warp drive
+44,100,OffTheShelf,office space
+55,44,OffTheShelf,risk
+25,35,OffTheShelf,finance
+40,30,Outsource,power
+10,20,Outsource,data center
+5,15,Outsource,HR
