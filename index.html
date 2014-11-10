@@ -127,7 +127,35 @@
     .popup h2 {
         margin: 0 0 1rem 0;
     }
+    
+    #swatches
+    {
+    text-align:center;
+    }
+    
+    .cswatch1  {
+        width:30px;
+        height:30px;
+        border:2px solid black;
+        margin:0;
+        background-color:#9FCD99;
+    }
 
+   .cswatch2  {
+        width:30px;
+        height:30px;
+        border:2px solid black;
+        margin:0;
+        background-color:#F26C64;
+    }
+    
+   .cswatch3  {
+    width:30px;
+    height:30px;
+    border:2px solid black;
+    margin:0;
+    background-color:#FFDD71;
+    }
 
     </style>
   </head>
@@ -142,21 +170,21 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
-     <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+     <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       <input type="text" id="xValNew" value="xvalnew">
     </div>
-      <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+      <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       <input type="text" id="yValNew" value="yvalnew">
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+      <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
+      <input type="text" id="descrNew" value="descrNew">
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       <input type="submit" id="inHouse" value="Create" onclick="updateGraph()"/>
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
+    <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       <input type="submit" id="offTheShelf" value="Create" onclick=""/>
     </div>
-      <div class="col-lg-2 col-md-2 col-sm-3" id="outerbutton">
-    <input type="submit" id="outsource" value="Create" onclick=""/>
-      </div>
   </div>
 </div>
 
@@ -326,10 +354,15 @@ d3.select("#svg").on('contextmenu',function (d,i) {
                 .attr("class", "popup")
                 .style("left", mousePosition[0] + "px")
                 .style("top", mousePosition[1] + "px");
-            popup.append("h2").text(d.description);
+            popup.append("h3").text(d.description);
             popup.append("p").text(
                 "Editing " + d.description)
-            popup.append("p")
+            popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
+            popup.append("div").attr("class","cswatch1")
+            popup.append("div").attr("class","cswatch2")
+            popup.append("div").attr("class","cswatch3")
+            popup.append("input").attr("type","submit").attr("id","editGo")
+            //.attr("onclick","updateGraph()")
             //.append("a")
             //.attr("href",d.link)
             //.text(d.link_text);
@@ -363,13 +396,13 @@ d3.select("#svg").on('contextmenu',function (d,i) {
 };
 
 
-function updateGraph() {
+function updateGraph(d) {
+
+console.log(d);
 
 var width = 960,
     height = 700;
     
-  var xValue = parseInt(document.getElementById('xValNew').value, 10);
-  var yValue = parseInt(document.getElementById('yValNew').value, 10);
   
   var x = d3.scale.linear()
     .range([0, width]);
@@ -385,14 +418,24 @@ var y = d3.scale.linear()
 
   
   var color = d3.scale.category10();
-  var typeValue = "InHouse";
+  
+  if (xValue) {
+  
+  var xValue = parseInt(document.getElementById('xValNew').value, 10);
+  var yValue = parseInt(document.getElementById('yValNew').value, 10);
+  var desValue = document.getElementById('descrNew').value
+  
   var newData = {
     'sepalWidth': xValue,
     'sepalLength': yValue,
     'species': typeValue,
-    'description': "new entry"
+    'description': desValue
   }
+  
   data.push(newData);
+  
+  }
+  
   
   var dots = svg.selectAll(".dot").data(data);
   
