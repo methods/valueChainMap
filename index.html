@@ -111,6 +111,22 @@
       opacity: 0.75;
       background-color: #FFDD71;
     }
+    
+    .popup {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: #fff;
+        width: 200px;
+        border: 1px #ccc solid;
+        border-radius: 6px;
+        box-shadow: #333 2px 2px 4px;
+        padding: 8px;
+        font-family: arial, helvetica, sans-serif;
+    }
+    .popup h2 {
+        margin: 0 0 1rem 0;
+    }
 
 
     </style>
@@ -162,7 +178,7 @@
 
 var counter = 0;
 var svg;
-
+var contextMenuShowing;
 var data;
 
 d3.csv("data.csv", function(error, csvdata) {
@@ -170,9 +186,6 @@ data = csvdata;
 data.forEach(function(d) {
     d.sepalLength = +d.sepalLength;
     d.sepalWidth = +d.sepalWidth;
-    //d.species = d.species;
-    //console.log(d.species);
-    //console.log(d.sepalWidth);
 });
 
 initGraph(data);
@@ -252,6 +265,7 @@ svg = d3.select("#outermapdiv")
           return 'dot color-' + color(d.species).replace('#','');
         })
       .attr("r", defaultSize)
+      .attr("class", "dcircle")
       .attr("cx", function(d) { return x(d.sepalWidth); })
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
@@ -264,9 +278,8 @@ svg = d3.select("#outermapdiv")
           d3.selectAll(".color-" + $(this).attr("dot-color"))
             .attr("r", defaultSize);
       })
-      .on("dblclick", function() {
+      .on("dblclick", function(d) {
           //doubleclick behavior here. edit function prob?
-          alert("doubleclick registered");
       });
 
 		svg.selectAll(".text")
@@ -286,9 +299,69 @@ svg = d3.select("#outermapdiv")
 		   .attr("font-family", "sans-serif")
 		   .attr("font-size", "11px")
 		   .attr("fill", "black");
+		   
+		   //popup menu
+		   
+		   
+ contextMenuShowing = false;
+
+d3.select("#svg").on('contextmenu',function (d,i) {
+  //alert("hello right click caught");
+    if(contextMenuShowing) {
+        d3.event.preventDefault();
+        d3.select(".popup").remove();
+        contextMenuShowing = false;
+    } else {
+        d3_target = d3.select(d3.event.target);
+        if (d3_target.classed("dcircle")) {
+            d3.event.preventDefault();
+            contextMenuShowing = true;
+            d = d3_target.datum();
+            // Build the popup
+            
+            canvas = d3.select("#svg"); // ?change
+            mousePosition = d3.mouse(canvas.node());
+            
+            popup = canvas.append("div")
+                .attr("class", "popup")
+                .style("left", mousePosition[0] + "px")
+                .style("top", mousePosition[1] + "px");
+            popup.append("h2").text(d.description);
+            popup.append("p").text(
+                "Editing " + d.description)
+            popup.append("p")
+            //.append("a")
+            //.attr("href",d.link)
+            //.text(d.link_text);
+            
+            canvasSize = [
+                canvas.node().offsetWidth,
+                canvas.node().offsetHeight
+            ];
+            
+            popupSize = [
+                popup.node().offsetWidth,
+                popup.node().offsetHeight
+            ];
+            
+            if (popupSize[0] + mousePosition[0] > canvasSize[0]) {
+                popup.style("left","auto");
+                popup.style("right",0);
+            }
+            
+            if (popupSize[1] + mousePosition[1] > canvasSize[1]) {
+                popup.style("top","auto");
+                popup.style("bottom",0);
+            }
+        }
+    }
+});
+
+//end popup menu
     
 
 };
+
 
 function updateGraph() {
 
@@ -331,6 +404,7 @@ var y = d3.scale.linear()
           return 'dot color-' + color(d.species).replace('#','');
         })
       .attr("r", defaultSize)
+      .attr("class", "dcircle")
       .attr("cx", function(d) { return x(d.sepalWidth); })
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
@@ -356,7 +430,6 @@ var y = d3.scale.linear()
 		      return d.description;
 		   })
 		   .attr("x", function(d) {
-		   		//console.log(d.species);
 		   		return x(d.sepalWidth);
 		   })
 		   .attr("y", function(d) {
@@ -367,9 +440,6 @@ var y = d3.scale.linear()
 		   .attr("fill", "black");
       
   dots.exit().remove();
-  
-  //console.log(data);
-  //drawD3Document(data);
   
 };
       
