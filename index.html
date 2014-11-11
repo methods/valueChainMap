@@ -171,20 +171,18 @@
   <div class="row">
     <div class="col-lg-1 col-md-1"></div>
      <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="text" id="xValNew">
+      new x:<input type="text" id="xValNew">
     </div>
       <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="text" id="yValNew" value="yvalnew">
+      new y:<input type="text" id="yValNew">
     </div>
-      <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="text" id="descrNew" value="descrNew">
-    </div>
-    <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="submit" id="inHouse" value="Create" onclick="addData()"/>
+      <div class="col-lg-3 col-md-3 col-sm-3" id="outerbutton">
+      description:<input type="text" id="descrNew">
     </div>
     <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
-      <input type="submit" id="offTheShelf" value="Create" onclick=""/>
+      <input type="submit" id="offTheShelf" value="Create" onclick="addData()"/>
     </div>
+
   </div>
 </div>
 
@@ -197,17 +195,17 @@
 </div>
 
 
-
-<!--<div id="canvas-svg"></div>-->
-
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
 <script>
 
-var counter = 0;
 var svg;
 var contextMenuShowing;
 var data;
+var linedata =[{
+     'i1': 0,
+     'i2': 0
+   }];
 var gd;
              
 d3.csv("data.csv", function(error, csvdata) {
@@ -216,14 +214,13 @@ data.forEach(function(d) {
     d.sepalLength = +d.sepalLength;
     d.sepalWidth = +d.sepalWidth;
 });
-
 initGraph(data);
 });
 
 var WIDTH = 600, HEIGHT = 600;
 var defaultSize = 50;
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40};
+var margin = {top: 30, right: 30, bottom: 30, left: 40};
     // width = WIDTH - margin.left - margin.right,
     // height = HEIGHT - margin.top - margin.bottom;
     
@@ -260,9 +257,9 @@ svg = d3.select("#outermapdiv")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  x.domain(d3.extent(data, function(d) { return d.sepalWidth; })).nice();
-  y.domain(d3.extent(data, function(d) { return d.sepalLength; })).nice();
-
+  x.domain(d3.extent([0,100])).nice();
+  y.domain(d3.extent([0,100])).nice();
+  
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -324,6 +321,7 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             popup.append("p")
             popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
             popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","delData()")
+            popup.append("p").text("Doubleclick another circle to create line")
             
             canvasSize = [
                 canvas.node().offsetWidth,
@@ -347,6 +345,7 @@ d3.select("#svg").on('contextmenu',function (d,i) {
         }
     }
 });
+
 
 //end popup menu
 updateGraph();
@@ -376,22 +375,21 @@ function addData() {
 }
 
 
-function addLine(nx1,ny1) {
+function addLine(d,i) {
 
-  svg.on("dblclick", function() {
-    //if is classed as dcircle
-    var x1 = d3.select(this).attr("cx");
-    var y1 = d3.select(this).attr("cy");
-    
-    svg.append("line")
-   .attr("x1", x1)
-   .attr("y1", y1)
-   .attr("x2", nx1)
-   .attr("y2", nx2)
-   .attr("stroke-width", 2)
-   .attr("stroke", "black");
-        });
-};
+var ind2 = data.indexOf(gd);
+
+ var newData = {
+     'i1': i,
+     'i2': ind2
+   }
+  
+  
+  if (typeof data[newData.i1]!=='undefined'&&!typeof data[newData.i2]!=='undefined') {
+  linedata.push(newData);
+  updateGraph();
+  }
+        };
 
 
 function makeGreen() {
@@ -426,7 +424,19 @@ function editData() {
 
 function delData() {
   var editIndex = data.indexOf(gd);
-  data.splice(editIndex, 1);
+ 
+//   // fcn to delete lines going to dead circles
+//   for(var a=0;a < linedata.length;a++)
+//     {
+//       if(linedata[a].i1===editIndex||linedata[a].i2===editIndex) {
+//         alert("hello line here");
+//         return null;
+//         //linedata.splice(a, 1);
+//       }
+//     }
+
+// console.log("got here");
+ data.splice(editIndex, 1);
   d3.select(".popup").remove();
   contextMenuShowing = false;
   updateGraph();
@@ -462,6 +472,53 @@ var drag = d3.behavior.drag()
   
   var dots = svg.selectAll(".dcircle").data(data);
   var labels = svg.selectAll(".dtext").data(data);
+  var lines = svg.selectAll(".dline").data(linedata);
+  
+  
+	    lines.enter().append("line")
+            .attr("x1", function(d) {
+              
+              return x(data[d.i1].sepalWidth);
+            })
+            .attr("y1", function(d) {
+              return y(data[d.i1].sepalLength);
+            })
+              .attr("x2", function(d) {
+              return x(data[d.i2].sepalWidth);
+            })
+            .attr("y2", function(d) {
+              return y(data[d.i2].sepalLength);
+            })
+            .attr("stroke-width", 5)
+            .attr("stroke", "black")
+          .attr("class", "dline")
+          .on("dblclick", function(d,i) {
+          alert("deleting a line");
+          updateGraph();
+        });
+          
+      
+      lines
+        .attr("x1", function(d) {
+          return x(data[d.i1].sepalWidth);
+        })
+        .attr("y1", function(d) {
+          return y(data[d.i1].sepalLength);
+        })
+          .attr("x2", function(d) {
+          return x(data[d.i2].sepalWidth);
+        })
+        .attr("y2", function(d) {
+          return y(data[d.i2].sepalLength);
+        })
+        .attr("stroke-width", 5)
+        .attr("stroke", "black")
+      .attr("class", "dline")
+       .on("dblclick", function(d,i) {
+          linedata.splice(i, 1);
+          updateGraph();
+        });
+      
   
   dots.enter().append("circle")
     .attr("class", function(d) {
@@ -474,10 +531,8 @@ var drag = d3.behavior.drag()
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
       .style("fill", function(d) { return color(d.species); })
-      .on("dblclick", function() {
-          var x1 = d3.select(this).attr("cx");
-          var y1 = d3.select(this).attr("cy");
-          //addLine(x1,y1);
+      .on("dblclick", function(d,i) {
+          addLine(d,i);
         });
       
    dots
@@ -522,10 +577,11 @@ var drag = d3.behavior.drag()
 		   })
 		   .attr("font-family", "sans-serif")
 		   .attr("font-size", "11px")
-		   .attr("fill", "black");
-      
+		  .attr("fill", "black");
+
   dots.exit().remove();
   labels.exit().remove();
+  lines.exit().remove();
   
 };
       
