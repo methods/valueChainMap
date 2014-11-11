@@ -448,6 +448,7 @@ function delData() {
      'i2': 0
    }];
 
+  data.splice(editIndex, 1);
   d3.select(".popup").remove();
   contextMenuShowing = false;
   updateGraph();
