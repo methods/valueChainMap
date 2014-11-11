@@ -308,7 +308,7 @@ d3.select("#svg").on('contextmenu',function (d,i) {
                 .attr("class", "popup")
                 .style("left", mousePosition[0] + "px")
                 .style("top", mousePosition[1] + "px");
-            popup.append("h3").text(d.description);
+            popup.append("h4").text(d.description);
             popup.append("p").text(
                 "Currently " + d.species)
             popup.append("input").attr("type","text").attr("id","eXVal").attr("value",d.sepalWidth)
@@ -425,17 +425,29 @@ function editData() {
 function delData() {
   var editIndex = data.indexOf(gd);
  
-  // fcn to delete lines going to dead circles
-  for(var a=0;a < linedata.length;a++)
-    {
-      if(linedata[a].i1===editIndex||linedata[a].i2===editIndex) {
-        //alert("hello line here");
-        //return null;
-        linedata.splice(a, 1);
-      }
-    }
+  // // fcn to delete lines going to dead circles
+  // for(var a=0;a < linedata.length;a++)
+  //   {
+  //       console.log("a is " +a);
+  //       console.log(linedata[a].i1);
+  //       console.log(linedata[a].i2);
+  //     if((linedata[a].i1===editIndex)||(linedata[a].i2===editIndex)) {
+  //       console.log("editIndex is" + editIndex)
+  //       //alert("hello line here");
+  //       //return null;
+  //       console.log("hit");
+  //       console.log("splicing" + a)
+  //       linedata.splice(a, 1);
+  //       console.log(linedata);
+  //     }
+  //   }
+  
+  //resets lines
+  linedata =[{
+     'i1': 0,
+     'i2': 0
+   }];
 
-  data.splice(editIndex, 1);
   d3.select(".popup").remove();
   contextMenuShowing = false;
   updateGraph();
@@ -492,7 +504,7 @@ var drag = d3.behavior.drag()
             .attr("stroke", "black")
           .attr("class", "dline")
           .on("dblclick", function(d,i) {
-          alert("deleting a line");
+          linedata.splice(i, 1);
           updateGraph();
         });
           
