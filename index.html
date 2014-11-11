@@ -425,18 +425,17 @@ function editData() {
 function delData() {
   var editIndex = data.indexOf(gd);
  
-//   // fcn to delete lines going to dead circles
-//   for(var a=0;a < linedata.length;a++)
-//     {
-//       if(linedata[a].i1===editIndex||linedata[a].i2===editIndex) {
-//         alert("hello line here");
-//         return null;
-//         //linedata.splice(a, 1);
-//       }
-//     }
+  // fcn to delete lines going to dead circles
+  for(var a=0;a < linedata.length;a++)
+    {
+      if(linedata[a].i1===editIndex||linedata[a].i2===editIndex) {
+        //alert("hello line here");
+        //return null;
+        linedata.splice(a, 1);
+      }
+    }
 
-// console.log("got here");
- data.splice(editIndex, 1);
+  data.splice(editIndex, 1);
   d3.select(".popup").remove();
   contextMenuShowing = false;
   updateGraph();
