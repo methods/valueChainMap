@@ -209,13 +209,7 @@ var svg;
 var contextMenuShowing;
 var data;
 var gd;
-var drag = d3.behavior.drag()
-             .on('dragstart', function() { dots.style('fill', 'red'); })
-             .on('drag', function() { dots.attr('cx', d3.event.x)
-                                            .attr('cy', d3.event.y); })
-             .on('dragend', function() { dots.style('fill', 'black'); });
              
-
 d3.csv("data.csv", function(error, csvdata) {
 data = csvdata;
 data.forEach(function(d) {
@@ -233,7 +227,6 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40};
     // width = WIDTH - margin.left - margin.right,
     // height = HEIGHT - margin.top - margin.bottom;
     
-
 function color(name) {
   if(name==="InHouse") return "#9FCD99";
   if(name==="OffTheShelf") return "#FFDD71";
@@ -244,15 +237,11 @@ var initGraph = function(data) {
 var width = 960,
     height = 700;
     
-    //console.log("in here");
-
 var x = d3.scale.linear()
     .range([0, width]);
 
 var y = d3.scale.linear()
     .range([height, 0]);
-
-// var color = d3.scale.category10();
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -387,6 +376,22 @@ function addData() {
 }
 
 
+function addLine(nx1,ny1) {
+
+  svg.on("dblclick", function() {
+    //if is classed as dcircle
+    var x1 = d3.select(this).attr("cx");
+    var y1 = d3.select(this).attr("cy");
+    
+    svg.append("line")
+   .attr("x1", x1)
+   .attr("y1", y1)
+   .attr("x2", nx1)
+   .attr("y2", nx2)
+   .attr("stroke-width", 2)
+   .attr("stroke", "black");
+        });
+};
 
 
 function makeGreen() {
@@ -410,15 +415,11 @@ function makeRed() {
 
 function editData() {
   var editIndex = data.indexOf(gd);
-  console.log("messing w")
-  console.log(data[editIndex])
   data[editIndex].description = document.getElementById('eDescr').value;
   data[editIndex].sepalWidth = document.getElementById('eXVal').value;
   data[editIndex].sepalLength = document.getElementById('eYVal').value;
   d3.select(".popup").remove();
   contextMenuShowing = false;
-    console.log("messed w")
-  console.log(data[editIndex])
   updateGraph();
 }
 
@@ -439,26 +440,24 @@ var width = 960,
   var x = d3.scale.linear()
     .range([0, width]);
 
-  //alert(typeof xValue);
-
 var y = d3.scale.linear()
     .range([height, 0]);
-    
     
   x.domain(d3.extent([0,100])).nice();
   y.domain(d3.extent([0,100])).nice();
 
-// console.log(x.domain);
-// console.log(y.domain);
-  
 var drag = d3.behavior.drag()
-            .on('drag', function() { dots.attr('cx', d3.event.x)
+            .on('drag', function(d) { dots.attr('cx', d3.event.x)
                                             .attr('cy', d3.event.y);
+              d.sepalWidth = (100-(width-d3.select(this).attr("cx"))/10);
+              d.sepalLength = (((height-d3.select(this).attr("cy"))/height)*100);
+              updateGraph();
                                             })
-            .on('dragend', function() {
+                                            
+                                            
+            .on('dragend', function(d) {
               updateGraph();
               });
- 
   
   
   var dots = svg.selectAll(".dcircle").data(data);
@@ -475,6 +474,11 @@ var drag = d3.behavior.drag()
       .attr("cy", function(d) { return y(d.sepalLength); })
       .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
       .style("fill", function(d) { return color(d.species); })
+      .on("dblclick", function() {
+          var x1 = d3.select(this).attr("cx");
+          var y1 = d3.select(this).attr("cy");
+          //addLine(x1,y1);
+        });
       
    dots
     .attr("class", function(d) {
@@ -522,9 +526,6 @@ var drag = d3.behavior.drag()
       
   dots.exit().remove();
   labels.exit().remove();
-
-
-//d3.selectAll(".draggable").call(drag);
   
 };
       
