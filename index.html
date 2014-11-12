@@ -358,14 +358,14 @@ d3.select("#svg").on('contextmenu',function (d,i) {
       .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
   legend.append("rect")
-      .attr("x", width - 18)
+      .attr("x", width )
       .attr("width", 18)
       .attr("height", 18)
       .attr("stroke", "black")
       .style("fill", function(d) { return color(d); });
 
   legend.append("text")
-      .attr("x", width - 24)
+      .attr("x", width - 6)
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
