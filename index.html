@@ -12,21 +12,52 @@
 
     h1 {
       text-align: center;
-      font-family: "Helvetica Neue";
-      font-size: 500%;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      font-size: 300%;
       margin-bottom: 20px;
+      color:#FFFFFF;
+    }
+    
+    h4 {
+    text-decoration: underline;
+    }
+    
+    input {
+      color:#000000
+    }
+    
+    #mainrow {
+      padding-bottom:10px;
+    }
+    
+    body {
+      background: #10303B;
+        font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      color:#FFFFFF;
+    }
+    
+    svg {
+      width:100%;
+      padding: 0px 20px 0px 20px;
+    }
+    
+    .popup {
+      color:#000000;
     }
     
     #svg {
-      width: 100%
-      border: 2px solid #BDBDBD
+      width: 100%;
+      border: 2px solid #BDBDBD;
       height: auto;
+      background: #FFFFFF;
     }
     #outermapdiv {
       margin-top: 10px;
+      padding: 0px 0px 0px 0px;
     }
     #outerbutton {
       padding: 0px 0px 0px 0px;
+      
 
     }
 
@@ -36,7 +67,7 @@
       opacity: 0.9;
       color: #FFFFFF;
       border: 1px solid #BDBDBD;
-      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
       font-size: 150%;
     }
       
@@ -63,7 +94,7 @@
       opacity: 0.9;
       color: #FFFFFF;
       border: 1px solid #BDBDBD;
-      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
       font-size: 150%;
     }
       
@@ -78,6 +109,11 @@
       opacity: 0.75;
       background-color: #F26C64;
     }
+    
+     footer a {
+      color:#FFFFFF;
+    }
+    
       #outsource:focus {
       outline: 0;
       opacity: 0.75;
@@ -90,8 +126,10 @@
       opacity: 0.9;
       color: #FFFFFF;
       border: 1px solid #BDBDBD;
-      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
       font-size: 150%;
+      vertical-align:bottom;
+      margin: 16px;
     }
 
     #offTheShelf:active {
@@ -122,7 +160,7 @@
         border-radius: 6px;
         box-shadow: #333 2px 2px 4px;
         padding: 8px;
-        font-family: arial, helvetica, sans-serif;
+        font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
     }
     .popup h2 {
         margin: 0 0 1rem 0;
@@ -156,6 +194,17 @@
     margin:0;
     background-color:#FFDD71;
     }
+      
+    footer {
+    font-size: 14px;
+    padding: 0px 0px 20px 20px;
+    background: #449bb5;
+    color: #fff;
+    }
+    
+    #MDlogo {
+      padding-right:10px;
+    }
 
     </style>
   </head>
@@ -164,22 +213,30 @@
 <div class="container-fluid">
 
   <div class="row">
-    <h1>Visualizing the value chain</h1>
+   <div class="col-lg-1 col-md-1 col-sm-1"><img src="MDlogo.png" height="100" width="100" id="MDlogo"></div>
+   <div class="col-lg-10 col-md-10 col-sm-10">
+   <h1>Visualizing the value chain</h1>
+   </div>
+    
 </div>
 </div>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-1 col-md-1"></div>
-     <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
+    <div class="col-lg-1 col-md-1 col-sm-1"></div>
+     <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
       new x:<input type="text" id="xValNew">
     </div>
-      <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
+    <div class="col-lg-1 col-md-1 col-sm-1"></div>
+      <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
       new y:<input type="text" id="yValNew">
     </div>
-      <div class="col-lg-3 col-md-3 col-sm-3" id="outerbutton">
+    <div class="col-lg-1 col-md-1 col-sm-1"></div>
+      <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
       description:<input type="text" id="descrNew">
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
+    <div class="col-lg-1 col-md-1 col-sm-1"></div>
+    <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
+    
       <input type="submit" id="offTheShelf" value="Create" onclick="addData()"/>
     </div>
 
@@ -187,7 +244,7 @@
 </div>
 
 <div class="container-fluid">
-  <div class="row">
+  <div class="row" id="mainrow">
     <div class="col-lg-1 col-md-1"></div>
     <div class="col-lg-10 col-md-10 col-sm-12" id="outermapdiv">
     </div>
@@ -220,7 +277,7 @@ initGraph(data);
 var WIDTH = 600, HEIGHT = 600;
 var defaultSize = 50;
 
-var margin = {top: 40, right: 40, bottom: 40, left: 40};
+var margin = {top: 20, right: 40, bottom: 40, left: 40};
     // width = WIDTH - margin.left - margin.right,
     // height = HEIGHT - margin.top - margin.bottom;
     
@@ -310,12 +367,13 @@ d3.select("#svg").on('contextmenu',function (d,i) {
             popup = canvas.append("div")
                 .attr("class", "popup")
                 .style("left", mousePosition[0] + "px")
-                .style("top", mousePosition[1] + "px");
-            popup.append("h4").text(d.description);
+                .style("top", mousePosition[1] + "px")
+                .attr("color", "#000000");
+            popup.append("h4").text(d.description).attr("text-decoration","underline")
             popup.append("p").text(
                 "Currently " + d.species)
-            popup.append("input").attr("type","text").attr("id","eXVal").attr("value",d.sepalWidth)
-            popup.append("input").attr("type","text").attr("id","eYVal").attr("value",d.sepalLength)
+            //popup.append("input").attr("type","text").attr("id","eXVal").attr("value",d.sepalWidth)
+            //popup.append("input").attr("type","text").attr("id","eYVal").attr("value",d.sepalLength)
             popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
             
             popup.append("input").attr("type","button").attr("class","cswatch1").attr("onclick","makeGreen()")
@@ -358,14 +416,14 @@ d3.select("#svg").on('contextmenu',function (d,i) {
       .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
   legend.append("rect")
-      .attr("x", width )
+      .attr("x", width + 10)
       .attr("width", 18)
       .attr("height", 18)
       .attr("stroke", "black")
       .style("fill", function(d) { return color(d); });
 
   legend.append("text")
-      .attr("x", width - 6)
+      .attr("x", width + 4)
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
@@ -439,8 +497,8 @@ function makeRed() {
 function editData() {
   var editIndex = data.indexOf(gd);
   data[editIndex].description = document.getElementById('eDescr').value;
-  data[editIndex].sepalWidth = document.getElementById('eXVal').value;
-  data[editIndex].sepalLength = document.getElementById('eYVal').value;
+  //data[editIndex].sepalWidth = document.getElementById('eXVal').value;
+  //data[editIndex].sepalLength = document.getElementById('eYVal').value;
   d3.select(".popup").remove();
   contextMenuShowing = false;
   updateGraph();
@@ -512,6 +570,68 @@ var drag = d3.behavior.drag()
   var lines = svg.selectAll(".dline").data(linedata);
   
   
+      
+  
+  dots.enter().append("circle")
+    .attr("class", function(d) {
+          return 'dot color-' + color(d.species).replace('#','');
+        })
+      .attr("r", defaultSize)
+      .attr("class", "dcircle")
+      .call(drag)
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+      .on("dblclick", function(d,i) {
+          addLine(d,i);
+        });
+      
+   dots
+    .attr("class", function(d) {
+          return 'dot color-' + color(d.species).replace('#','');
+        })
+      .attr("r", defaultSize)
+      .attr("class", "dcircle")
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+    
+		svg.selectAll(".dtext")
+		   .data(data)
+		   .enter()
+		   .append("text")
+		   .text(function(d) {
+		      return d.description;
+		   })
+		   .attr("x", function(d) {
+		   		return x(d.sepalWidth);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
+		   .attr("font-size", "11px")
+		   .attr("fill", "black")
+		   .attr("class", "dtext");
+		   
+   svg.selectAll(".dtext")
+		   .data(data)
+		   .text(function(d) {
+		      return d.description;
+		   })
+		   .attr("x", function(d) {
+		   		return x(d.sepalWidth);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
+		   .attr("font-size", "11px")
+		  .attr("fill", "black");
+		  
+		  
 	    lines.enter().append("line")
             .attr("x1", function(d) {
               
@@ -555,75 +675,41 @@ var drag = d3.behavior.drag()
           linedata.splice(i, 1);
           updateGraph();
         });
-      
-  
-  dots.enter().append("circle")
-    .attr("class", function(d) {
-          return 'dot color-' + color(d.species).replace('#','');
-        })
-      .attr("r", defaultSize)
-      .attr("class", "dcircle")
-      .call(drag)
-      .attr("cx", function(d) { return x(d.sepalWidth); })
-      .attr("cy", function(d) { return y(d.sepalLength); })
-      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
-      .style("fill", function(d) { return color(d.species); })
-      .on("dblclick", function(d,i) {
-          addLine(d,i);
-        });
-      
-   dots
-    .attr("class", function(d) {
-          return 'dot color-' + color(d.species).replace('#','');
-        })
-      .attr("r", defaultSize)
-      .attr("class", "dcircle")
-      .attr("cx", function(d) { return x(d.sepalWidth); })
-      .attr("cy", function(d) { return y(d.sepalLength); })
-      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
-      .style("fill", function(d) { return color(d.species); })
-    
-		svg.selectAll(".dtext")
-		   .data(data)
-		   .enter()
-		   .append("text")
-		   .text(function(d) {
-		      return d.description;
-		   })
-		   .attr("x", function(d) {
-		   		return x(d.sepalWidth);
-		   })
-		   .attr("y", function(d) {
-		   		return y(d.sepalLength);
-		   })
-		   .attr("font-family", "sans-serif")
-		   .attr("font-size", "11px")
-		   .attr("fill", "black")
-		   .attr("class", "dtext");
-		   
-   svg.selectAll(".dtext")
-		   .data(data)
-		   .text(function(d) {
-		      return d.description;
-		   })
-		   .attr("x", function(d) {
-		   		return x(d.sepalWidth);
-		   })
-		   .attr("y", function(d) {
-		   		return y(d.sepalLength);
-		   })
-		   .attr("font-family", "sans-serif")
-		   .attr("font-size", "11px")
-		  .attr("fill", "black");
 
   dots.exit().remove();
   labels.exit().remove();
   lines.exit().remove();
   
 };
-      
-
 
 </script>
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-3 col-xs-12">
+        <h2>Contact</h2>
+        <ul>
+          <li>T. 020 7240 1121</li>
+          <li>E. <a href="mailto:info@methods.co.uk">info@methods.co.uk</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3 col-xs-12">
+        <h2>Address</h2>
+        <p>125 Shaftesbury Avenue <br>London WC2H 8AD</p>
+      </div>
+      <div class="col-sm-3 col-xs-12">
+        <h2>Copyright</h2>
+        <p>© Methods Digital Ltd 2014 <br>All rights reserved.</p>
+      </div>
+      <div class="col-sm-3 col-xs-12 md-footer-partof">
+      
+        <p><br><br><br>Part of the <br><a href="http://www.methods.co.uk">METHODS</a> group.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
 </body>
 </html>
