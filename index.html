@@ -606,7 +606,7 @@ var drag = d3.behavior.drag()
 		      return d.description;
 		   })
 		   .attr("x", function(d) {
-		   		return x(d.sepalWidth);
+		   		return x(d.sepalWidth)-15;
 		   })
 		   .attr("y", function(d) {
 		   		return y(d.sepalLength);
@@ -614,6 +614,7 @@ var drag = d3.behavior.drag()
 		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
 		   .attr("font-size", "11px")
 		   .attr("fill", "black")
+		   .attr("text-anchor", "middle")
 		   .attr("class", "dtext");
 		   
    svg.selectAll(".dtext")
@@ -622,13 +623,14 @@ var drag = d3.behavior.drag()
 		      return d.description;
 		   })
 		   .attr("x", function(d) {
-		   		return x(d.sepalWidth);
+		   		return x(d.sepalWidth)-15;
 		   })
 		   .attr("y", function(d) {
 		   		return y(d.sepalLength);
 		   })
 		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
 		   .attr("font-size", "11px")
+		   .attr("text-anchor", "middle")
 		  .attr("fill", "black");
 		  
 		  
