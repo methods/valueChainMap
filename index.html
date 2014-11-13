@@ -606,7 +606,10 @@ var drag = d3.behavior.drag()
 		      return d.description;
 		   })
 		   .attr("x", function(d) {
-		   		return x(d.sepalWidth)-15;
+		     console.log(d.description);
+		   		var ccount = d.description.length;
+		   		var adjust = 6 - ccount;
+		   		return x(d.sepalWidth)-(adjust);
 		   })
 		   .attr("y", function(d) {
 		   		return y(d.sepalLength);
@@ -623,7 +626,9 @@ var drag = d3.behavior.drag()
 		      return d.description;
 		   })
 		   .attr("x", function(d) {
-		   		return x(d.sepalWidth)-15;
+		   		var ccount = d.description.length;
+		   		var adjust = 6 - ccount;
+		   		return x(d.sepalWidth)-(adjust);
 		   })
 		   .attr("y", function(d) {
 		   		return y(d.sepalLength);
