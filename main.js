@@ -1,4 +1,7 @@
 
+//define our global variables needed. svg is the canvas, cMS is the status of the pop-up right click
+//data holds the x/y circle data, line data has line information (set to 0, 0 to start with no lines)
+//gd is a reference to the circle that the context menu has been called on
 var svg;
   var contextMenuShowing;
   var data;
