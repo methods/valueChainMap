@@ -12,8 +12,8 @@ var svg;
   d3.csv("data.csv", function(error, csvdata) {
   data = csvdata;
   data.forEach(function(d) {
-      d.sepalLength = +d.sepalLength;
-      d.sepalWidth = +d.sepalWidth;
+      d.dataYVal = +d.dataYVal;
+      d.dataXVal = +d.dataXVal;
   });
   //initializes graph.
   initGraph(data);
@@ -119,7 +119,7 @@ var svg;
                     .attr("color", "#000000");
                 popup.append("h4").text(d.description).attr("text-decoration","underline")
                 popup.append("p").text(
-                    "Currently " + d.species)
+                    "Currently " + d.dataType)
                 popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
                 
                 popup.append("input").attr("type","button").attr("class","cswatch1").attr("onclick","makeGreen()")
@@ -189,9 +189,9 @@ var svg;
     var desValue = document.getElementById('descrNew').value
     var typeValue = "OffTheShelf" //defaults to this value
     var newData = {
-      'sepalWidth': xValue,
-      'sepalLength': yValue,
-      'species': typeValue,
+      'dataXVal': xValue,
+      'dataYVal': yValue,
+      'dataType': typeValue,
       'description': desValue
     }
     
@@ -223,19 +223,19 @@ var svg;
   //color circle to specified value by changing type. gd descends from contextMenu
   function makeGreen() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].species = "InHouse";
+    data[editIndex].dataType = "InHouse";
     updateGraph();
   }
   
   function makeYellow() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].species = "OffTheShelf";
+    data[editIndex].dataType = "OffTheShelf";
     updateGraph();
   }
   
   function makeRed() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].species = "Outsource";
+    data[editIndex].dataType = "Outsource";
     updateGraph();
   }
   
@@ -287,8 +287,8 @@ var svg;
                 dots.attr('cx', d3.event.x)
                     .attr('cy', d3.event.y);
                 //changes data to reflect new location on graph
-                d.sepalWidth = (100-(width-d3.select(this).attr("cx"))/10);
-                d.sepalLength = (((height-d3.select(this).attr("cy"))/height)*100);
+                d.dataXVal = (100-(width-d3.select(this).attr("cx"))/10);
+                d.dataYVal = (((height-d3.select(this).attr("cy"))/height)*100);
                 updateGraph();
                                               })
                                               
@@ -309,16 +309,16 @@ var svg;
   	    lines.enter().append("line")
               .attr("x1", function(d) {
                 
-                return x(data[d.i1].sepalWidth);
+                return x(data[d.i1].dataXVal);
               })
               .attr("y1", function(d) {
-                return y(data[d.i1].sepalLength);
+                return y(data[d.i1].dataYVal);
               })
                 .attr("x2", function(d) {
-                return x(data[d.i2].sepalWidth);
+                return x(data[d.i2].dataXVal);
               })
               .attr("y2", function(d) {
-                return y(data[d.i2].sepalLength);
+                return y(data[d.i2].dataYVal);
               })
               .attr("stroke-width", 5)
               .attr("stroke", "black")
@@ -331,16 +331,16 @@ var svg;
         
         lines
           .attr("x1", function(d) {
-            return x(data[d.i1].sepalWidth);
+            return x(data[d.i1].dataXVal);
           })
           .attr("y1", function(d) {
-            return y(data[d.i1].sepalLength);
+            return y(data[d.i1].dataYVal);
           })
             .attr("x2", function(d) {
-            return x(data[d.i2].sepalWidth);
+            return x(data[d.i2].dataXVal);
           })
           .attr("y2", function(d) {
-            return y(data[d.i2].sepalLength);
+            return y(data[d.i2].dataYVal);
           })
           .attr("stroke-width", 5)
           .attr("stroke", "black")
@@ -353,24 +353,24 @@ var svg;
     //draws circles next so they are above lines and below labels
     dots.enter().append("circle")
       .attr("class", function(d) {
-            return 'dot color-' + color(d.species).replace('#','');
+            return 'dot color-' + color(d.dataType).replace('#','');
           })
         .attr("r", defaultCircleSize)
         .attr("class", "dcircle")
         .call(drag)
-        .attr("cx", function(d) { return x(d.sepalWidth); })
-        .attr("cy", function(d) { return y(d.sepalLength); })
-        .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
-        .style("fill", function(d) { return color(d.species); })
+        .attr("cx", function(d) { return x(d.dataXVal); })
+        .attr("cy", function(d) { return y(d.dataYVal); })
+        .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
+        .style("fill", function(d) { return color(d.dataType); })
         
         
      dots
         .attr("r", defaultCircleSize)
         .attr("class", "dcircle")
-        .attr("cx", function(d) { return x(d.sepalWidth); })
-        .attr("cy", function(d) { return y(d.sepalLength); })
-        .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
-        .style("fill", function(d) { return color(d.species); })
+        .attr("cx", function(d) { return x(d.dataXVal); })
+        .attr("cy", function(d) { return y(d.dataYVal); })
+        .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
+        .style("fill", function(d) { return color(d.dataType); })
         
       //draws labels last so they are on very top
   		svg.selectAll(".dtext")
@@ -383,10 +383,10 @@ var svg;
   		   .attr("x", function(d) {
   		   		var ccount = d.description.length;
   		   		var adjust = 6 - ccount;
-  		   		return x(d.sepalWidth)-(adjust);
+  		   		return x(d.dataXVal)-(adjust);
   		   })
   		   .attr("y", function(d) {
-  		   		return y(d.sepalLength);
+  		   		return y(d.dataYVal);
   		   })
   		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
   		   .attr("font-size", "13px")
@@ -405,10 +405,10 @@ var svg;
   		   .attr("x", function(d) {
   		   		var ccount = d.description.length;
   		   		var adjust = 6 - ccount;
-  		   		return x(d.sepalWidth)-(adjust);
+  		   		return x(d.dataXVal)-(adjust);
   		   })
   		   .attr("y", function(d) {
-  		   		return y(d.sepalLength);
+  		   		return y(d.dataYVal);
   		   })
   		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
   		   .attr("font-size", "13px")
