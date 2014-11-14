@@ -1,4 +1,4 @@
-$(document).ready(function() {
+
     
   //initializes our global variables. svg holds canvas, cMS is a popup status, data is main data
   //linedata holds line information, and gd is a global d item referring to selected circle
@@ -426,4 +426,3 @@ $(document).ready(function() {
     lines.exit().remove();
     
   }
-});
