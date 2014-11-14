@@ -6,7 +6,207 @@
     <title>Mapping the value chain</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     
-    <link rel="stylesheet" type="text/css" href="main.css">
+    <style>
+    
+    /* CSS goes here. */
+
+    h1 {
+      text-align: center;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      font-size: 300%;
+      margin-bottom: 20px;
+      color:#FFFFFF;
+    }
+    
+    h4 {
+    text-decoration: underline;
+    }
+    
+    input {
+      color:#000000
+    }
+    
+    #mainrow {
+      padding-bottom:10px;
+    }
+    
+    body {
+      background: #10303B;
+        font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      color:#FFFFFF;
+    }
+    
+    svg {
+      width:100%;
+      padding: 0px 20px 0px 20px;
+    }
+    
+    .popup {
+      color:#000000;
+    }
+    
+    #svg {
+      width: 100%;
+      border: 2px solid #BDBDBD;
+      height: auto;
+      background: #FFFFFF;
+    }
+    #outermapdiv {
+      margin-top: 10px;
+      padding: 0px 0px 0px 0px;
+    }
+    #outerbutton {
+      padding: 0px 0px 0px 0px;
+      
+
+    }
+
+      #inHouse {
+      width: 100%;
+      background-color: #9FCD99;
+      opacity: 0.9;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      font-size: 150%;
+    }
+      
+      #inHouse:active {
+      background-color: #9FCD99;
+      opacity: 0.9;
+      color: #FFFFFF;
+    }
+
+     #inHouse:hover {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #9FCD99;
+    }
+      #inHouse:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #9FCD99;
+    }
+      
+      #outsource {
+      width: 100%;
+      background-color: #F26C64;
+      opacity: 0.9;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      font-size: 150%;
+    }
+      
+      #outsource:active {
+      background-color: #F26C64;
+      opacity: 0.9;
+      color: #FFFFFF;
+    }
+
+     #outsource:hover {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #F26C64;
+    }
+    
+     footer a {
+      color:#FFFFFF;
+    }
+    
+      #outsource:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #F26C64;
+    }
+
+    #offTheShelf {
+      width: 100%;
+      background-color: #FFDD71;
+      opacity: 0.9;
+      color: #FFFFFF;
+      border: 1px solid #BDBDBD;
+      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+      font-size: 150%;
+      vertical-align:bottom;
+      margin: 16px;
+    }
+
+    #offTheShelf:active {
+      background-color: #FFDD71;
+      opacity: 0.9;
+      color: #FFFFFF;
+    }
+    
+    #offTheShelf:hover {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #FFDD71;
+    }
+
+    #offTheShelf:focus {
+      outline: 0;
+      opacity: 0.75;
+      background-color: #FFDD71;
+    }
+    
+    .popup {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: #fff;
+        width: 200px;
+        border: 1px #ccc solid;
+        border-radius: 6px;
+        box-shadow: #333 2px 2px 4px;
+        padding: 8px;
+        font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
+    }
+    .popup h2 {
+        margin: 0 0 1rem 0;
+    }
+    
+    #swatches
+    {
+    text-align:center;
+    }
+    
+    .cswatch1  {
+        width:30px;
+        height:30px;
+        border:2px solid black;
+        margin:0;
+        background-color:#9FCD99;
+    }
+
+   .cswatch2  {
+        width:30px;
+        height:30px;
+        border:2px solid black;
+        margin:0;
+        background-color:#F26C64;
+    }
+    
+   .cswatch3  {
+    width:30px;
+    height:30px;
+    border:2px solid black;
+    margin:0;
+    background-color:#FFDD71;
+    }
+      
+    footer {
+    font-size: 14px;
+    padding: 0px 0px 20px 20px;
+    background: #449bb5;
+    color: #fff;
+    }
+    
+    #MDlogo {
+      padding-right:10px;
+    }
+
+    </style>
   </head>
 <body>
 
@@ -54,8 +254,444 @@
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
-<script src="main.js"></script>
+<script>
 
+var svg;
+var contextMenuShowing;
+var data;
+var linedata =[{
+     'i1': 1,
+     'i2': 2
+   }];
+var gd;
+             
+d3.csv("data.csv", function(error, csvdata) {
+data = csvdata;
+data.forEach(function(d) {
+    d.sepalLength = +d.sepalLength;
+    d.sepalWidth = +d.sepalWidth;
+});
+initGraph(data);
+});
+
+var WIDTH = 600, HEIGHT = 600;
+var defaultSize = 50;
+
+var margin = {top: 20, right: 40, bottom: 40, left: 40};
+    // width = WIDTH - margin.left - margin.right,
+    // height = HEIGHT - margin.top - margin.bottom;
+    
+function color(name) {
+  if(name==="InHouse") return "#9FCD99";
+  if(name==="OffTheShelf") return "#FFDD71";
+  if(name==="Outsource") return "#F26C64";
+
+}
+
+var types=["InHouse","OffTheShelf","Outsource"];
+
+var initGraph = function(data) {
+var width = 960,
+    height = 700;
+    
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+svg = d3.select("#outermapdiv")
+    .append("div")
+    .attr("id", "svg")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .attr("id", "gcanvas");
+    
+  x.domain(d3.extent([0,100])).nice();
+  y.domain(d3.extent([0,100])).nice();
+  
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Evolution (most commodified here)");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Value chain (most visible here)")
+
+		   
+		   //popup menu
+ contextMenuShowing = false;
+
+d3.select("#svg").on('contextmenu',function (d,i) {
+  //alert("hello right click caught");
+    if(contextMenuShowing) {
+        d3.event.preventDefault();
+        d3.select(".popup").remove();
+        contextMenuShowing = false;
+    } else {
+        d3_target = d3.select(d3.event.target);
+        if (d3_target.classed("dcircle")||d3_target.classed("dtext")) {
+            d3.event.preventDefault();
+            contextMenuShowing = true;
+            d = d3_target.datum();
+            gd = d3_target.datum();
+            // Build the popup
+            
+            canvas = d3.select("#svg"); // ?change
+            mousePosition = d3.mouse(canvas.node());
+            
+            popup = canvas.append("div")
+                .attr("class", "popup")
+                .style("left", mousePosition[0] + "px")
+                .style("top", mousePosition[1] + "px")
+                .attr("color", "#000000");
+            popup.append("h4").text(d.description).attr("text-decoration","underline")
+            popup.append("p").text(
+                "Currently " + d.species)
+            //popup.append("input").attr("type","text").attr("id","eXVal").attr("value",d.sepalWidth)
+            //popup.append("input").attr("type","text").attr("id","eYVal").attr("value",d.sepalLength)
+            popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
+            
+            popup.append("input").attr("type","button").attr("class","cswatch1").attr("onclick","makeGreen()")
+            popup.append("input").attr("type","button").attr("class","cswatch3").attr("onclick","makeYellow()")
+            popup.append("input").attr("type","button").attr("class","cswatch2").attr("onclick","makeRed()")
+            popup.append("p")
+            popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
+            popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","delData()")
+            popup.append("p").text("Doubleclick another label to create line")
+            
+            canvasSize = [
+                canvas.node().offsetWidth,
+                canvas.node().offsetHeight
+            ];
+            
+            popupSize = [
+                popup.node().offsetWidth,
+                popup.node().offsetHeight
+            ];
+            
+            if (popupSize[0] + mousePosition[0] > canvasSize[0]) {
+                popup.style("left","auto");
+                popup.style("right",0);
+            }
+            
+            if (popupSize[1] + mousePosition[1] > canvasSize[1]) {
+                popup.style("top","auto");
+                popup.style("bottom",0);
+            }
+        }
+    }
+});
+
+  var legend = svg.selectAll(".legend")
+      .data(types)
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width + 10)
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("stroke", "black")
+      .style("fill", function(d) { return color(d); });
+
+  legend.append("text")
+      .attr("x", width + 4)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+
+//end popup menu
+updateGraph();
+
+};
+
+function addData() {
+  
+  var xValue = parseInt(document.getElementById('xValNew').value, 10);
+  var yValue = parseInt(document.getElementById('yValNew').value, 10);
+  var desValue = document.getElementById('descrNew').value
+  var typeValue = "OffTheShelf"
+  var newData = {
+    'sepalWidth': xValue,
+    'sepalLength': yValue,
+    'species': typeValue,
+    'description': desValue
+  }
+  
+  data.push(newData);
+// empty out vals etc
+  document.getElementById('xValNew').value = "";
+  document.getElementById('yValNew').value = "";
+  document.getElementById('descrNew').value = "";
+
+  updateGraph();
+}
+
+
+function addLine(d,i) {
+
+var ind2 = data.indexOf(gd);
+
+ var newData = {
+     'i1': i,
+     'i2': ind2
+   }
+  
+  
+  if (typeof data[newData.i1]!=='undefined'&&!typeof data[newData.i2]!=='undefined') {
+  linedata.push(newData);
+  updateGraph();
+  }
+        };
+
+
+function makeGreen() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].species = "InHouse";
+  updateGraph();
+}
+
+function makeYellow() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].species = "OffTheShelf";
+  updateGraph();
+}
+
+function makeRed() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].species = "Outsource";
+  updateGraph();
+}
+
+
+function editData() {
+  var editIndex = data.indexOf(gd);
+  data[editIndex].description = document.getElementById('eDescr').value;
+  //data[editIndex].sepalWidth = document.getElementById('eXVal').value;
+  //data[editIndex].sepalLength = document.getElementById('eYVal').value;
+  d3.select(".popup").remove();
+  contextMenuShowing = false;
+  updateGraph();
+}
+
+
+function delData() {
+  var editIndex = data.indexOf(gd);
+ 
+  // // fcn to delete lines going to dead circles
+  // for(var a=0;a < linedata.length;a++)
+  //   {
+  //       console.log("a is " +a);
+  //       console.log(linedata[a].i1);
+  //       console.log(linedata[a].i2);
+  //     if((linedata[a].i1===editIndex)||(linedata[a].i2===editIndex)) {
+  //       console.log("editIndex is" + editIndex)
+  //       //alert("hello line here");
+  //       //return null;
+  //       console.log("hit");
+  //       console.log("splicing" + a)
+  //       linedata.splice(a, 1);
+  //       console.log(linedata);
+  //     }
+  //   }
+  
+  //resets lines
+  linedata =[{
+     'i1': 0,
+     'i2': 0
+   }];
+
+  data.splice(editIndex, 1);
+  d3.select(".popup").remove();
+  contextMenuShowing = false;
+  updateGraph();
+}
+
+function updateGraph() {
+
+var width = 960,
+    height = 700;
+    
+  var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+    
+  x.domain(d3.extent([0,100])).nice();
+  y.domain(d3.extent([0,100])).nice();
+
+var drag = d3.behavior.drag()
+            .on('drag', function(d) { dots.attr('cx', d3.event.x)
+                                            .attr('cy', d3.event.y);
+              d.sepalWidth = (100-(width-d3.select(this).attr("cx"))/10);
+              d.sepalLength = (((height-d3.select(this).attr("cy"))/height)*100);
+              updateGraph();
+                                            })
+                                            
+                                            
+            .on('dragend', function(d) {
+              updateGraph();
+              });
+  
+  svg.selectAll(".dcircle").remove();
+  svg.selectAll(".dtext").remove();
+  
+  var dots = svg.selectAll(".dcircle").data(data);
+  var labels = svg.selectAll(".dtext").data(data);
+  var lines = svg.selectAll(".dline").data(linedata);
+  
+  
+		  
+	    lines.enter().append("line")
+            .attr("x1", function(d) {
+              
+              return x(data[d.i1].sepalWidth);
+            })
+            .attr("y1", function(d) {
+              return y(data[d.i1].sepalLength);
+            })
+              .attr("x2", function(d) {
+              return x(data[d.i2].sepalWidth);
+            })
+            .attr("y2", function(d) {
+              return y(data[d.i2].sepalLength);
+            })
+            .attr("stroke-width", 5)
+            .attr("stroke", "black")
+          .attr("class", "dline")
+          .on("dblclick", function(d,i) {
+          linedata.splice(i, 1);
+          updateGraph();
+        });
+          
+      
+      lines
+        .attr("x1", function(d) {
+          return x(data[d.i1].sepalWidth);
+        })
+        .attr("y1", function(d) {
+          return y(data[d.i1].sepalLength);
+        })
+          .attr("x2", function(d) {
+          return x(data[d.i2].sepalWidth);
+        })
+        .attr("y2", function(d) {
+          return y(data[d.i2].sepalLength);
+        })
+        .attr("stroke-width", 5)
+        .attr("stroke", "black")
+      .attr("class", "dline")
+       .on("dblclick", function(d,i) {
+          linedata.splice(i, 1);
+          updateGraph();
+        });
+  
+  
+  dots.enter().append("circle")
+    .attr("class", function(d) {
+          return 'dot color-' + color(d.species).replace('#','');
+        })
+      .attr("r", defaultSize)
+      .attr("class", "dcircle")
+      .call(drag)
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+      
+      
+   dots
+      .attr("r", defaultSize)
+      .attr("class", "dcircle")
+      .attr("cx", function(d) { return x(d.sepalWidth); })
+      .attr("cy", function(d) { return y(d.sepalLength); })
+      .attr("dot-color", function(d) { return color(d.species).replace('#',''); })
+      .style("fill", function(d) { return color(d.species); })
+      
+    
+		svg.selectAll(".dtext")
+		   .data(data)
+		   .enter()
+		   .append("text")
+		   .text(function(d) {
+		      return d.description;
+		   })
+		   .attr("x", function(d) {
+		   		var ccount = d.description.length;
+		   		var adjust = 6 - ccount;
+		   		return x(d.sepalWidth)-(adjust);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
+		   .attr("font-size", "12px")
+		   .attr("fill", "black")
+		   .attr("text-anchor", "middle")
+		   .attr("class", "dtext")
+		   .on("dblclick", function(d,i) {
+           addLine(d,i);
+        });
+		   
+   svg.selectAll(".dtext")
+		   .data(data)
+		   .text(function(d) {
+		      return d.description;
+		   })
+		   .attr("x", function(d) {
+		   		var ccount = d.description.length;
+		   		var adjust = 6 - ccount;
+		   		return x(d.sepalWidth)-(adjust);
+		   })
+		   .attr("y", function(d) {
+		   		return y(d.sepalLength);
+		   })
+		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
+		   .attr("font-size", "12px")
+		   .attr("text-anchor", "middle")
+		  .attr("fill", "black")
+		  .on("dblclick", function(d,i) {
+           addLine(d,i);
+        });
+
+  dots.exit().remove();
+  labels.exit().remove();
+  lines.exit().remove();
+  
+};
+
+</script>
+      
 <footer>
   <div class="container">
     <div class="row">
