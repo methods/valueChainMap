@@ -45,75 +45,18 @@
     }
     #outerbutton {
       padding: 0px 0px 0px 0px;
-      
 
     }
-
-      #inHouse {
-      width: 100%;
-      background-color: #9FCD99;
-      opacity: 0.9;
-      color: #FFFFFF;
-      border: 1px solid #BDBDBD;
-      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
-      font-size: 150%;
-    }
-      
-      #inHouse:active {
-      background-color: #9FCD99;
-      opacity: 0.9;
-      color: #FFFFFF;
-    }
-
-     #inHouse:hover {
-      outline: 0;
-      opacity: 0.75;
-      background-color: #9FCD99;
-    }
-      #inHouse:focus {
-      outline: 0;
-      opacity: 0.75;
-      background-color: #9FCD99;
-    }
-      
-      #outsource {
-      width: 100%;
-      background-color: #F26C64;
-      opacity: 0.9;
-      color: #FFFFFF;
-      border: 1px solid #BDBDBD;
-      font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
-      font-size: 150%;
-    }
-      
-      #outsource:active {
-      background-color: #F26C64;
-      opacity: 0.9;
-      color: #FFFFFF;
-    }
-
-     #outsource:hover {
-      outline: 0;
-      opacity: 0.75;
-      background-color: #F26C64;
-    }
-    
      footer a {
       color:#FFFFFF;
-    }
-    
-      #outsource:focus {
-      outline: 0;
-      opacity: 0.75;
-      background-color: #F26C64;
     }
 
     #offTheShelf {
       width: 100%;
-      background-color: #FFDD71;
+      background-color: #449bb5;
       opacity: 0.9;
       color: #FFFFFF;
-      border: 1px solid #BDBDBD;
+      border: 1px solid #FFFFFF;
       font-family: 'Museo 310','Helvetica Neue', Helvetica, sans-serif;
       font-size: 150%;
       vertical-align:bottom;
@@ -121,7 +64,7 @@
     }
 
     #offTheShelf:active {
-      background-color: #FFDD71;
+      background-color: #449bb5;
       opacity: 0.9;
       color: #FFFFFF;
     }
@@ -129,13 +72,13 @@
     #offTheShelf:hover {
       outline: 0;
       opacity: 0.75;
-      background-color: #FFDD71;
+      background-color: #449bb5;
     }
 
     #offTheShelf:focus {
       outline: 0;
       opacity: 0.75;
-      background-color: #FFDD71;
+      background-color: #449bb5;
     }
     
     .popup {
