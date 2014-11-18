@@ -90,7 +90,7 @@ var svg;
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Value chain (most visible here)");
+        .text("Value chain (most visible here)")
   
   		   
     		   //popup menu starts here
@@ -187,18 +187,20 @@ var svg;
   
   //adds a new data point with input boxes above graph
   function addData() {
-    var xValue = Math.floor((Math.random() * 50) + 25);
-    var yValue = Math.floor((Math.random() * 50) + 25);
-    var desValue = document.getElementById('descrNew').value;
-    var typeValue = "OffTheShelf"; //defaults to this value
+    var xValue = parseInt(document.getElementById('xValNew').value, 10);
+    var yValue = parseInt(document.getElementById('yValNew').value, 10);
+    var desValue = document.getElementById('descrNew').value
+    var typeValue = "OffTheShelf" //defaults to this value
     var newData = {
       'dataXVal': xValue,
       'dataYVal': yValue,
       'dataType': typeValue,
       'description': desValue
-    };
+    }
     
     data.push(newData);
+    document.getElementById('xValNew').value = "";
+    document.getElementById('yValNew').value = "";
     document.getElementById('descrNew').value = "";
     
     updateGraph();
@@ -212,14 +214,14 @@ var svg;
     var newData = {
        'i1': i,
        'i2': ind2
-     };
+     }
     
-    //checks that both are valid indices of circles before pushing a new line
-    if (typeof data[newData.i1]!=='undefined'&&typeof data[newData.i2]!=='undefined') {
+    //checks that both are valid indices of circles before pushing
+    if (typeof data[newData.i1]!=='undefined'&&!typeof data[newData.i2]!=='undefined') {
     linedata.push(newData);
     updateGraph();
     }
-  }
+  };
   
   //color circle to specified value by changing type. gd descends from contextMenu
   function makeGreen() {
@@ -362,7 +364,7 @@ var svg;
         .attr("cx", function(d) { return x(d.dataXVal); })
         .attr("cy", function(d) { return y(d.dataYVal); })
         .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
-        .style("fill", function(d) { return color(d.dataType); });
+        .style("fill", function(d) { return color(d.dataType); })
         
         
      dots
@@ -371,7 +373,7 @@ var svg;
         .attr("cx", function(d) { return x(d.dataXVal); })
         .attr("cy", function(d) { return y(d.dataYVal); })
         .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
-        .style("fill", function(d) { return color(d.dataType); });
+        .style("fill", function(d) { return color(d.dataType); })
         
       //draws labels last so they are on very top
   		svg.selectAll(".dtext")
