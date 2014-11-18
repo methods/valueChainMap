@@ -29,13 +29,13 @@ var svg;
   
   //this function controls which colors are assigned to which categories
   function color(name) {
-    if(name==="InHouse") return "#9FCD99";
-    if(name==="OffTheShelf") return "#FFDD71";
+    if(name==="In House") return "#9FCD99";
+    if(name==="Off The Shelf") return "#FFDD71";
     if(name==="Outsource") return "#F26C64";
   }
   
   //listing of types for the legend
-  var types=["InHouse","OffTheShelf","Outsource"];
+  var types=["In House","Off The Shelf","Outsource"];
   
   //this fcn appends canvas and draws axes
     var initGraph = function(data) {
@@ -190,7 +190,7 @@ var svg;
     var xValue = Math.floor((Math.random() * 50) + 25);
     var yValue = Math.floor((Math.random() * 50) + 25);
     var desValue = document.getElementById('descrNew').value;
-    var typeValue = "OffTheShelf"; //defaults to this value
+    var typeValue = "Off The Shelf"; //defaults to this value
     var newData = {
       'dataXVal': xValue,
       'dataYVal': yValue,
@@ -224,13 +224,13 @@ var svg;
   //color circle to specified value by changing type. gd descends from contextMenu
   function makeGreen() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].dataType = "InHouse";
+    data[editIndex].dataType = "In House";
     updateGraph();
   }
   
   function makeYellow() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].dataType = "OffTheShelf";
+    data[editIndex].dataType = "Off The Shelf";
     updateGraph();
   }
   
