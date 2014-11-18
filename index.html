@@ -9,7 +9,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
     <link rel="stylesheet" type="text/css" href="main.css">
   </head>
-<body>
+<body onload="valueChainMap()">
 
 <div class="container-fluid">
 
@@ -18,8 +18,9 @@
    <div class="col-lg-10 col-md-10 col-sm-10">
    <h1>Visualizing the value chain</h1>
    </div>
-    
-</div>
+
+  </div>
+
 </div>
 <div class="container-fluid">
   <div class="row">
@@ -29,8 +30,8 @@
     </div>
     <div class="col-lg-1 col-md-1 col-sm-1"></div>
     <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
-    
-      <input type="submit" id="offTheShelf" value="Create" onclick="addData()"/>
+
+      <input type="submit" id="offTheShelf" value="Create" onclick="valueChainMap.addData()"/>
     </div>
 
   </div>
@@ -66,7 +67,7 @@
         <p>© Methods Digital Ltd 2014 <br>All rights reserved.</p>
       </div>
       <div class="col-sm-3 col-xs-12 md-footer-partof">
-      
+
         <p><br><br><br>Part of the <br><a href="http://www.methods.co.uk">METHODS</a> group.</p>
       </div>
     </div>
