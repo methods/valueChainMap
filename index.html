@@ -24,10 +24,15 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-1 col-md-1 col-sm-1"></div>
-      <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
+    <div class="col-lg-2 col-md-2 col-sm-2" id="outerbutton">
       Description:<input type="text" id="descrNew">
     </div>
-    <div class="col-lg-1 col-md-1 col-sm-1"></div>
+    <div class="col-lg-1 col-md-1 col-sm-1">
+      Select Size:
+      <input name="size-selector" type="radio" id="small"> - Small<br>
+      <input name="size-selector" type="radio" id="medium"> - Medium<br>
+      <input name="size-selector" type="radio" id="large"> - Large
+    </div>
     <div class="col-lg-1 col-md-1 col-sm-1" id="outerbutton">
     
       <input type="submit" id="offTheShelf" value="Create" onclick="addData()"/>

@@ -1,3 +1,4 @@
+(function(){
 
 //define our global variables needed. svg is the canvas, cMS is the status of the pop-up right click
 //data holds the x/y circle data, line data has line information (set to 0, 0 to start with no lines)
@@ -29,13 +30,13 @@ var svg;
   
   //this function controls which colors are assigned to which categories
   function color(name) {
-    if(name==="In House") return "#9FCD99";
-    if(name==="Off The Shelf") return "#FFDD71";
-    if(name==="Outsource") return "#F26C64";
+    if(name==="Build") return "#9FCD99";
+    if(name==="Share") return "#FFDD71";
+    if(name==="Consume") return "#F26C64";
   }
   
   //listing of types for the legend
-  var types=["In House","Off The Shelf","Outsource"];
+  var types=["Build","Share","Consume"];
   
   //this fcn appends canvas and draws axes
     var initGraph = function(data) {
@@ -190,7 +191,7 @@ var svg;
     var xValue = Math.floor((Math.random() * 50) + 25);
     var yValue = Math.floor((Math.random() * 50) + 25);
     var desValue = document.getElementById('descrNew').value;
-    var typeValue = "Off The Shelf"; //defaults to this value
+    var typeValue = "Share"; //defaults to this value
     var newData = {
       'dataXVal': xValue,
       'dataYVal': yValue,
@@ -224,19 +225,19 @@ var svg;
   //color circle to specified value by changing type. gd descends from contextMenu
   function makeGreen() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].dataType = "In House";
+    data[editIndex].dataType = "Build";
     updateGraph();
   }
   
   function makeYellow() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].dataType = "Off The Shelf";
+    data[editIndex].dataType = "Share";
     updateGraph();
   }
   
   function makeRed() {
     var editIndex = data.indexOf(gd);
-    data[editIndex].dataType = "Outsource";
+    data[editIndex].dataType = "Consume";
     updateGraph();
   }
   
@@ -424,3 +425,4 @@ var svg;
     lines.exit().remove();
     
   }
+}) ()
