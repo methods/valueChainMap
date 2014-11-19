@@ -26,7 +26,6 @@ var svg;
   });
 
 
-  var defaultCircleSize = 50;
   //margin between graph and canvas
   var margin = {top: 20, right: 40, bottom: 40, left: 40};
 
@@ -270,6 +269,22 @@ var svg;
   //deletes a circle based on selection made by contextMenu
   valueChainMap.delData = function delData() {
     var editIndex = data.indexOf(gd);
+    /*adjusts lines to track the new index positions of the points
+     and removes ones attached to the deleted point*/
+    for(i = 0; i<linedata.length; i++){
+      if (linedata[i].i1 === editIndex || linedata[i].i2 === editIndex) {
+        linedata.splice(i,1);
+        i--;
+      }
+      else {
+        if (linedata[i].i1> editIndex){
+          linedata[i].i1--
+        };
+        if (linedata[i].i2> editIndex){
+          linedata[i].i2--
+        };
+      };
+    };
 
     data.splice(editIndex, 1);
     d3.select(".popup").remove();
@@ -333,7 +348,7 @@ var svg;
               .attr("y2", function(d) {
                 return y(data[d.i2].dataYVal);
               })
-              .attr("stroke-width", 5)
+              .attr("stroke-width", 2)
               .attr("stroke", "black")
             .attr("class", "dline")
             .on("dblclick", function(d,i) {
@@ -355,7 +370,7 @@ var svg;
           .attr("y2", function(d) {
             return y(data[d.i2].dataYVal);
           })
-          .attr("stroke-width", 5)
+          .attr("stroke-width", 2)
           .attr("stroke", "black")
         .attr("class", "dline")
          .on("dblclick", function(d,i) {
