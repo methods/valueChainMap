@@ -75,18 +75,26 @@ var svg;
     x.domain(d3.extent([0,100])).nice();
     y.domain(d3.extent([0,100])).nice();
 
-    svg.append("g")
+    var xaxis = svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height-40) + ")")
         .call(xAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text("Evolution (most commodified here)");
+
+    var xlabels = ["Genesis","Custom built","Product","Commodity"]
+
+    for (i=0; i< xlabels.length; i++){
+      xaxis.append("text")
+          .attr("class", "label")
+          .attr("x", (i+1)*width/xlabels.length)
+          .attr("y", -6)
+          .style("text-anchor", "end")
+          .text(xlabels[i]);
+    }
+    xaxis.append("text").attr("x" ,width/2).attr("y",30).text("Evolution")
+
 
     svg.append("g")
+        .attr("transform", "translate(0," + (-40) + ")")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
