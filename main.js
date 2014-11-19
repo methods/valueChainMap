@@ -195,12 +195,14 @@ var svg;
     var xValue = Math.floor((Math.random() * 50) + 25);
     var yValue = Math.floor((Math.random() * 50) + 25);
     var desValue = document.getElementById('descrNew').value;
+    var radius = parseInt(document.querySelector('input[name = "size-selectors"]:checked').value)
     var typeValue = "Share"; //defaults to this value
     var newData = {
       'dataXVal': xValue,
       'dataYVal': yValue,
       'dataType': typeValue,
-      'description': desValue
+      'description': desValue,
+      'radius': radius
     };
 
     data.push(newData);
@@ -361,7 +363,7 @@ var svg;
       .attr("class", function(d) {
             return 'dot color-' + color(d.dataType).replace('#','');
           })
-        .attr("r", function() {  })
+        .attr("r", function(d) { return d.radius })
         .attr("class", "dcircle")
         .call(drag)
         .attr("cx", function(d) { return x(d.dataXVal); })
@@ -371,7 +373,7 @@ var svg;
 
 
      dots
-        .attr("r", function(d) { console.log(d.radius); return d.radius; })
+        .attr("r", function(d) { return d.radius; })
         .attr("class", "dcircle")
         .attr("cx", function(d) { return x(d.dataXVal); })
         .attr("cy", function(d) { return y(d.dataYVal); })
