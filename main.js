@@ -180,7 +180,7 @@ var svg;
         .data(types)
       .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+        .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; });
 
     //legend is fleshed out here and below
     legend.append("rect")
