@@ -1,4 +1,4 @@
-(function(){
+
 
 //define our global variables needed. svg is the canvas, cMS is the status of the pop-up right click
 //data holds the x/y circle data, line data has line information (set to 0, 0 to start with no lines)
@@ -18,6 +18,7 @@ var svg;
   data.forEach(function(d) {
       d.dataYVal = +d.dataYVal;
       d.dataXVal = +d.dataXVal;
+      d.radius = +d.radius;
   });
   //initializes graph.
   initGraph(data);
@@ -357,7 +358,7 @@ var svg;
       .attr("class", function(d) {
             return 'dot color-' + color(d.dataType).replace('#','');
           })
-        .attr("r", defaultCircleSize)
+        .attr("r", function(d) { console.log(d.radius); return d.radiuis; })
         .attr("class", "dcircle")
         .call(drag)
         .attr("cx", function(d) { return x(d.dataXVal); })
@@ -367,7 +368,7 @@ var svg;
         
         
      dots
-        .attr("r", defaultCircleSize)
+        .attr("r", function(d) { console.log(d.radius); return d.radius; })
         .attr("class", "dcircle")
         .attr("cx", function(d) { return x(d.dataXVal); })
         .attr("cy", function(d) { return y(d.dataYVal); })
@@ -425,4 +426,4 @@ var svg;
     lines.exit().remove();
     
   }
-}) ()
+
