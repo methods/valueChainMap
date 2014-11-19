@@ -358,7 +358,7 @@ var svg;
       .attr("class", function(d) {
             return 'dot color-' + color(d.dataType).replace('#','');
           })
-        .attr("r", function(d) { console.log(d.radius); return d.radiuis; })
+        .attr("r", function() {  })
         .attr("class", "dcircle")
         .call(drag)
         .attr("cx", function(d) { return x(d.dataXVal); })
