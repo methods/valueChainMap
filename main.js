@@ -54,11 +54,13 @@ var svg;
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom");
+        .orient("bottom")
+        .tickValues([]);
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left");
+        .orient("left")
+        .tickValues([]);
 
     svg = d3.select("#outermapdiv")
         .append("div")
@@ -74,24 +76,35 @@ var svg;
     x.domain(d3.extent([0,100])).nice();
     y.domain(d3.extent([0,100])).nice();
 
-    svg.append("g")
+    var xaxis = svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height-40) + ")")
         .call(xAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text("Evolution (most commodified here)");
+
+    var xlabels = ["Genesis","Custom built","Product","Commodity"]
+
+    for (i=0; i < xlabels.length; i++){
+      xaxis.append("text")
+          .attr("class", "label")
+          .attr("x", ((i+1)*width/xlabels.length)-20)
+          .attr("y", -6)
+          .style("text-anchor", "end")
+          .text(xlabels[i]);
+
+      svg.append("g").attr("transform","translate("+(i+1)*width/xlabels.length+ (-40)+ ")").call(yAxis)
+    }
+    xaxis.append("text").attr("x" ,width/2).attr("y",30).text("Evolution")
+
 
     svg.append("g")
+        .attr("transform", "translate(0," + (-40) + ")")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
         .attr("class", "label")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
+        .attr("x",-100)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Value chain (most visible here)");
@@ -166,7 +179,7 @@ var svg;
         .data(types)
       .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+        .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; });
 
     //legend is fleshed out here and below
     legend.append("rect")
