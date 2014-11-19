@@ -91,7 +91,10 @@ var svg;
           .style("text-anchor", "end")
           .text(xlabels[i]);
 
-      svg.append("g").attr("class","divider").attr("transform","translate("+(i+1)*width/xlabels.length+ (-40)+ ")").call(yAxis)
+      svg.append("g").attr("class","divider")
+                      .attr("stroke-width", 2)
+                      .attr('stroke-dasharray','25,25')
+                      .attr("transform","translate("+(i+1)*width/xlabels.length+ (-40)+ ")").call(yAxis)
     }
     xaxis.append("text").attr("x" ,width/2).attr("y",30).text("Evolution")
 

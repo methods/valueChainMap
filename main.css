@@ -13,7 +13,7 @@ text-decoration: underline;
 
 .divider {
   fill: none;
-  stroke: black;
+  stroke: #B5B5B5;
   shape-rendering: crispEdges;
 }
 
