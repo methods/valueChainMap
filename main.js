@@ -26,7 +26,6 @@ var svg;
   });
 
 
-  var defaultCircleSize = 50;
   //margin between graph and canvas
   var margin = {top: 20, right: 40, bottom: 40, left: 40};
 
@@ -259,12 +258,22 @@ var svg;
   //deletes a circle based on selection made by contextMenu
   valueChainMap.delData = function delData() {
     var editIndex = data.indexOf(gd);
-
-    //resets lines, otherwise they move because the data array is sliding after splice
-    linedata =[{
-       'i1': 0,
-       'i2': 0
-     }];
+    /*adjusts lines to track the new index positions of the points
+     and removes ones attached to the deleted point*/
+    for(i = 0; i<linedata.length; i++){
+      if (linedata[i].i1 === editIndex || linedata[i].i2 === editIndex) {
+        linedata.splice(i,1);
+        i--;
+      }
+      else {
+        if (linedata[i].i1> editIndex){
+          linedata[i].i1--
+        };
+        if (linedata[i].i2> editIndex){
+          linedata[i].i2--
+        };
+      };
+    };
 
     data.splice(editIndex, 1);
     d3.select(".popup").remove();
