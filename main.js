@@ -3,6 +3,7 @@
 //define our global variables needed. svg is the canvas, cMS is the status of the pop-up right click
 //data holds the x/y circle data, line data has line information (set to 0, 0 to start with no lines)
 //gd is a reference to the circle that the context menu has been called on
+var valueChainMap = function () {
 var svg;
   var contextMenuShowing;
   var data;
@@ -11,7 +12,7 @@ var svg;
        'i2': 2
      }];
   var gd;
-  
+
   //reads data into program from selected file. the forEach converts string to number
   d3.csv("data.csv", function(error, csvdata) {
   data = csvdata;
@@ -23,41 +24,43 @@ var svg;
   //initializes graph.
   initGraph(data);
   });
-  
-  
+
+
   var defaultCircleSize = 50;
   //margin between graph and canvas
   var margin = {top: 20, right: 40, bottom: 40, left: 40};
-  
+
   //this function controls which colors are assigned to which categories
   function color(name) {
     if(name==="Build") return "#9FCD99";
     if(name==="Share") return "#FFDD71";
     if(name==="Consume") return "#F26C64";
   }
-  
+
   //listing of types for the legend
+
   var types=["Build","Share","Consume"];
-  
+
+
   //this fcn appends canvas and draws axes
     var initGraph = function(data) {
     var width = 960,
         height = 700;
-        
+
     var x = d3.scale.linear()
         .range([0, width]);
-    
+
     var y = d3.scale.linear()
         .range([height, 0]);
-    
+
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
-    
+
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left");
-    
+
     svg = d3.select("#outermapdiv")
         .append("div")
         .attr("id", "svg")
@@ -67,11 +70,11 @@ var svg;
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("id", "gcanvas");
-      
+
     //domain is hardcoded from 0 to 100 and does not change with data
     x.domain(d3.extent([0,100])).nice();
     y.domain(d3.extent([0,100])).nice();
-    
+
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -82,7 +85,7 @@ var svg;
         .attr("y", -6)
         .style("text-anchor", "end")
         .text("Evolution (most commodified here)");
-  
+
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
@@ -93,11 +96,11 @@ var svg;
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Value chain (most visible here)");
-  
-  		   
+
+
     		   //popup menu starts here
      contextMenuShowing = false;
-    
+
       d3.select("#svg").on('contextmenu',function (d,i) {
         if(contextMenuShowing) {
             d3.event.preventDefault();
@@ -111,12 +114,12 @@ var svg;
                 d = d3_target.datum();
                 gd = d3_target.datum();
                 // Build the popup
-                
+
                 canvas = d3.select("#svg"); // ?change
                 mousePosition = d3.mouse(canvas.node());
-                
+
                 //popup is drawn here
-                
+
                 popup = canvas.append("div")
                     .attr("class", "popup")
                     .style("left", mousePosition[0] + "px")
@@ -126,30 +129,30 @@ var svg;
                 popup.append("p").text(
                     "Currently " + d.dataType)
                 popup.append("input").attr("type","text").attr("id","eDescr").attr("value",d.description)
-                
-                popup.append("input").attr("type","button").attr("class","cswatch1").attr("onclick","makeGreen()")
-                popup.append("input").attr("type","button").attr("class","cswatch3").attr("onclick","makeYellow()")
-                popup.append("input").attr("type","button").attr("class","cswatch2").attr("onclick","makeRed()")
+
+                popup.append("input").attr("type","button").attr("class","cswatch1").attr("onclick","valueChainMap.makeGreen()")
+                popup.append("input").attr("type","button").attr("class","cswatch3").attr("onclick","valueChainMap.makeYellow()")
+                popup.append("input").attr("type","button").attr("class","cswatch2").attr("onclick","valueChainMap.makeRed()")
                 popup.append("p")
-                popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","editData()")
-                popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","delData()")
+                popup.append("input").attr("type","submit").attr("id","editGo").attr("onclick","valueChainMap.editData()")
+                popup.append("input").attr("type","button").attr("value","Delete").attr("onclick","valueChainMap.delData()")
                 popup.append("p").text("Doubleclick another label to create line")
-                
+
                 canvasSize = [
                     canvas.node().offsetWidth,
                     canvas.node().offsetHeight
                 ];
-                
+
                 popupSize = [
                     popup.node().offsetWidth,
                     popup.node().offsetHeight
                 ];
-                
+
                 if (popupSize[0] + mousePosition[0] > canvasSize[0]) {
                     popup.style("left","auto");
                     popup.style("right",0);
                 }
-                
+
                 if (popupSize[1] + mousePosition[1] > canvasSize[1]) {
                     popup.style("top","auto");
                     popup.style("bottom",0);
@@ -158,14 +161,14 @@ var svg;
         }
     });
     //end popup menu
-  
+
     //legend is defined and appended here
     var legend = svg.selectAll(".legend")
         .data(types)
       .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-    
+
     //legend is fleshed out here and below
     legend.append("rect")
         .attr("x", width + 10)
@@ -173,22 +176,22 @@ var svg;
         .attr("height", 18)
         .attr("stroke", "black")
         .style("fill", function(d) { return color(d); });
-  
+
     legend.append("text")
         .attr("x", width + 4)
         .attr("y", 9)
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(function(d) { return d; });
-  
-  
+
+
     // fill graph with data
     updateGraph();
-  
+
   };
-  
+
   //adds a new data point with input boxes above graph
-  function addData() {
+  valueChainMap.addData =function addData() {
     var xValue = Math.floor((Math.random() * 50) + 25);
     var yValue = Math.floor((Math.random() * 50) + 25);
     var desValue = document.getElementById('descrNew').value;
@@ -199,90 +202,90 @@ var svg;
       'dataType': typeValue,
       'description': desValue
     };
-    
+
     data.push(newData);
     document.getElementById('descrNew').value = "";
-    
+
     updateGraph();
   }
-  
+
   //adds a new line with i(passed in as dblclick) and ind2 (has contextclick)
   function addLine(d,i) {
-  
+
     var ind2 = data.indexOf(gd);
-  
+
     var newData = {
        'i1': i,
        'i2': ind2
      };
-    
+
     //checks that both are valid indices of circles before pushing a new line
-    if (typeof data[newData.i1]!=='undefined'&&typeof data[newData.i2]!=='undefined') {
+    if (typeof data[newData.i1]!=='undefined'&& typeof data[newData.i2]!=='undefined') {
     linedata.push(newData);
     updateGraph();
     }
   }
-  
+
   //color circle to specified value by changing type. gd descends from contextMenu
-  function makeGreen() {
+  valueChainMap.makeGreen = function makeGreen() {
     var editIndex = data.indexOf(gd);
     data[editIndex].dataType = "Build";
     updateGraph();
   }
-  
-  function makeYellow() {
+
+  valueChainMap.makeYellow = function makeYellow() {
     var editIndex = data.indexOf(gd);
     data[editIndex].dataType = "Share";
     updateGraph();
   }
-  
-  function makeRed() {
+
+  valueChainMap.makeRed = function makeRed() {
     var editIndex = data.indexOf(gd);
     data[editIndex].dataType = "Consume";
     updateGraph();
   }
-  
+
   //updates description based on input in contextMenu
-  function editData() {
+  valueChainMap.editData =function editData() {
     var editIndex = data.indexOf(gd);
     data[editIndex].description = document.getElementById('eDescr').value;
     d3.select(".popup").remove();
     contextMenuShowing = false;
     updateGraph();
   }
-  
+
   //deletes a circle based on selection made by contextMenu
-  function delData() {
+  valueChainMap.delData = function delData() {
     var editIndex = data.indexOf(gd);
-   
+
     //resets lines, otherwise they move because the data array is sliding after splice
     linedata =[{
        'i1': 0,
        'i2': 0
      }];
-  
+
     data.splice(editIndex, 1);
     d3.select(".popup").remove();
     contextMenuShowing = false;
     updateGraph();
   }
-  
+
   //redraws all elements on map
   function updateGraph() {
-  
+
   var width = 960,
       height = 700;
-      
+
   //maps data to canvas dx / dy
   var x = d3.scale.linear()
       .range([0, width]);
-  
+
   var y = d3.scale.linear()
       .range([height, 0]);
-      
+
   x.domain(d3.extent([0,100])).nice();
   y.domain(d3.extent([0,100])).nice();
-  
+
   //sets dragging behavior
   var drag = d3.behavior.drag()
               .on('drag', function(d) {
@@ -294,24 +297,24 @@ var svg;
                 d.dataYVal = (((height-d3.select(this).attr("cy"))/height)*100);
                 updateGraph();
                                               })
-                                              
+
               .on('dragend', function(d) {
                 updateGraph();
                 });
-    
+
     //must remove all instances of these two to ensure lines are beneath circles
     svg.selectAll(".dcircle").remove();
     svg.selectAll(".dtext").remove();
-    
+
     var dots = svg.selectAll(".dcircle").data(data);
     var labels = svg.selectAll(".dtext").data(data);
     var lines = svg.selectAll(".dline").data(linedata);
-    
-    
+
+
     //draws lines first so they are at bottom
   	    lines.enter().append("line")
               .attr("x1", function(d) {
-                
+
                 return x(data[d.i1].dataXVal);
               })
               .attr("y1", function(d) {
@@ -330,8 +333,8 @@ var svg;
             linedata.splice(i, 1);
             updateGraph();
           });
-            
-        
+
+
         lines
           .attr("x1", function(d) {
             return x(data[d.i1].dataXVal);
@@ -352,7 +355,7 @@ var svg;
             linedata.splice(i, 1);
             updateGraph();
           });
-    
+
     //draws circles next so they are above lines and below labels
     dots.enter().append("circle")
       .attr("class", function(d) {
@@ -365,8 +368,8 @@ var svg;
         .attr("cy", function(d) { return y(d.dataYVal); })
         .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
         .style("fill", function(d) { return color(d.dataType); });
-        
-        
+
+
      dots
         .attr("r", function(d) { console.log(d.radius); return d.radius; })
         .attr("class", "dcircle")
@@ -374,7 +377,7 @@ var svg;
         .attr("cy", function(d) { return y(d.dataYVal); })
         .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
         .style("fill", function(d) { return color(d.dataType); });
-        
+
       //draws labels last so they are on very top
   		svg.selectAll(".dtext")
   		   .data(data)
@@ -399,7 +402,7 @@ var svg;
   		   .on("dblclick", function(d,i) {
              addLine(d,i);
           });
-  		   
+
      svg.selectAll(".dtext")
   		   .data(data)
   		   .text(function(d) {
@@ -420,10 +423,11 @@ var svg;
   		  .on("dblclick", function(d,i) {
              addLine(d,i);
           });
-  
+
     dots.exit().remove();
     labels.exit().remove();
     lines.exit().remove();
-    
+
   }
 
+}
