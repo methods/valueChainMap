@@ -55,11 +55,13 @@ var svg;
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom");
+        .orient("bottom")
+        .tickValues([]);
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left");
+        .orient("left")
+        .tickValues([]);
 
     svg = d3.select("#outermapdiv")
         .append("div")
@@ -75,24 +77,35 @@ var svg;
     x.domain(d3.extent([0,100])).nice();
     y.domain(d3.extent([0,100])).nice();
 
-    svg.append("g")
+    var xaxis = svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height-40) + ")")
         .call(xAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text("Evolution (most commodified here)");
+
+    var xlabels = ["Genesis","Custom built","Product","Commodity"]
+
+    for (i=0; i < xlabels.length; i++){
+      xaxis.append("text")
+          .attr("class", "label")
+          .attr("x", ((i+1)*width/xlabels.length)-20)
+          .attr("y", -6)
+          .style("text-anchor", "end")
+          .text(xlabels[i]);
+
+      svg.append("g").attr("class","divider").attr("transform","translate("+(i+1)*width/xlabels.length+ (-40)+ ")").call(yAxis)
+    }
+    xaxis.append("text").attr("x" ,width/2).attr("y",30).text("Evolution")
+
 
     svg.append("g")
+        .attr("transform", "translate(0," + (-40) + ")")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
         .attr("class", "label")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
+        .attr("x",-100)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Value chain (most visible here)");
@@ -167,7 +180,7 @@ var svg;
         .data(types)
       .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+        .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; });
 
     //legend is fleshed out here and below
     legend.append("rect")
@@ -195,14 +208,12 @@ var svg;
     var xValue = Math.floor((Math.random() * 50) + 25);
     var yValue = Math.floor((Math.random() * 50) + 25);
     var desValue = document.getElementById('descrNew').value;
-    var radius = parseInt(document.querySelector('input[name = "size-selectors"]:checked').value)
     var typeValue = "Share"; //defaults to this value
     var newData = {
       'dataXVal': xValue,
       'dataYVal': yValue,
       'dataType': typeValue,
-      'description': desValue,
-      'radius': radius
+      'description': desValue
     };
 
     data.push(newData);
@@ -220,7 +231,7 @@ var svg;
        'i1': i,
        'i2': ind2
      };
-
+     console.log(linedata)
     //checks that both are valid indices of circles before pushing a new line
     if (typeof data[newData.i1]!=='undefined'&& typeof data[newData.i2]!=='undefined') {
     linedata.push(newData);
@@ -259,12 +270,6 @@ var svg;
   //deletes a circle based on selection made by contextMenu
   valueChainMap.delData = function delData() {
     var editIndex = data.indexOf(gd);
-
-    //resets lines, otherwise they move because the data array is sliding after splice
-    linedata =[{
-       'i1': 0,
-       'i2': 0
-     }];
 
     data.splice(editIndex, 1);
     d3.select(".popup").remove();
@@ -363,7 +368,7 @@ var svg;
       .attr("class", function(d) {
             return 'dot color-' + color(d.dataType).replace('#','');
           })
-        .attr("r", function(d) { return d.radius })
+        .attr("r", function() {  })
         .attr("class", "dcircle")
         .call(drag)
         .attr("cx", function(d) { return x(d.dataXVal); })
@@ -373,7 +378,7 @@ var svg;
 
 
      dots
-        .attr("r", function(d) { return d.radius; })
+        .attr("r", function(d) { console.log(d.radius); return d.radius; })
         .attr("class", "dcircle")
         .attr("cx", function(d) { return x(d.dataXVal); })
         .attr("cy", function(d) { return y(d.dataYVal); })
