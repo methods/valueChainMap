@@ -350,7 +350,7 @@ var svg;
               .attr("y2", function(d) {
                 return y(data[d.i2].dataYVal);
               })
-              .attr("stroke-width", 5)
+              .attr("stroke-width", 2)
               .attr("stroke", "black")
             .attr("class", "dline")
             .on("dblclick", function(d,i) {
@@ -372,7 +372,7 @@ var svg;
           .attr("y2", function(d) {
             return y(data[d.i2].dataYVal);
           })
-          .attr("stroke-width", 5)
+          .attr("stroke-width", 2)
           .attr("stroke", "black")
         .attr("class", "dline")
          .on("dblclick", function(d,i) {
