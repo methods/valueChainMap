@@ -211,7 +211,7 @@ var svg;
     var yValue = Math.floor((Math.random() * 50) + 25);
     var desValue = document.getElementById('descrNew').value;
     var radius = parseInt(document.querySelector('input[name = "size-selectors"]:checked').value)
-    var typeValue = "Share"; //defaults to this value
+    var typeValue = document.getElementById('colour-selector').value;
     var newData = {
       'dataXVal': xValue,
       'dataYVal': yValue,
@@ -235,7 +235,6 @@ var svg;
        'i1': i,
        'i2': ind2
      };
-     console.log(linedata)
     //checks that both are valid indices of circles before pushing a new line
     if (typeof data[newData.i1]!=='undefined'&& typeof data[newData.i2]!=='undefined') {
     linedata.push(newData);
@@ -398,7 +397,7 @@ var svg;
 
 
      dots
-        .attr("r", function(d) { console.log(d.radius); return d.radius; })
+        .attr("r", function(d) { return d.radius; })
         .attr("class", "dcircle")
         .attr("cx", function(d) { return x(d.dataXVal); })
         .attr("cy", function(d) { return y(d.dataYVal); })
