@@ -360,28 +360,6 @@ var svg;
             updateGraph();
           });
 
-
-        lines
-          .attr("x1", function(d) {
-            return x(data[d.i1].dataXVal);
-          })
-          .attr("y1", function(d) {
-            return y(data[d.i1].dataYVal);
-          })
-            .attr("x2", function(d) {
-            return x(data[d.i2].dataXVal);
-          })
-          .attr("y2", function(d) {
-            return y(data[d.i2].dataYVal);
-          })
-          .attr("stroke-width", 2)
-          .attr("stroke", "black")
-        .attr("class", "dline")
-         .on("dblclick", function(d,i) {
-            linedata.splice(i, 1);
-            updateGraph();
-          });
-
     //draws circles next so they are above lines and below labels
     dots.enter().append("circle")
       .attr("class", function(d) {
@@ -396,13 +374,6 @@ var svg;
         .style("fill", function(d) { return color(d.dataType); });
 
 
-     dots
-        .attr("r", function(d) { return d.radius; })
-        .attr("class", "dcircle")
-        .attr("cx", function(d) { return x(d.dataXVal); })
-        .attr("cy", function(d) { return y(d.dataYVal); })
-        .attr("dot-color", function(d) { return color(d.dataType).replace('#',''); })
-        .style("fill", function(d) { return color(d.dataType); });
 
       //draws labels last so they are on very top
   		svg.selectAll(".dtext")
@@ -429,26 +400,7 @@ var svg;
              addLine(d,i);
           });
 
-     svg.selectAll(".dtext")
-  		   .data(data)
-  		   .text(function(d) {
-  		      return d.description;
-  		   })
-  		   .attr("x", function(d) {
-  		   		var ccount = d.description.length;
-  		   		var adjust = 6 - ccount;
-  		   		return x(d.dataXVal)-(adjust);
-  		   })
-  		   .attr("y", function(d) {
-  		   		return y(d.dataYVal);
-  		   })
-  		   .attr("font-family", "'Museo 310','Helvetica Neue', Helvetica, sans-serif")
-  		   .attr("font-size", "13px")
-  		   .attr("text-anchor", "middle")
-  		  .attr("fill", "black")
-  		  .on("dblclick", function(d,i) {
-             addLine(d,i);
-          });
+
 
     dots.exit().remove();
     labels.exit().remove();
